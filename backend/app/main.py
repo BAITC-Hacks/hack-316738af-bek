@@ -14,13 +14,14 @@ from urllib.parse import quote
 from fastapi import FastAPI, Header, Request, Response
 from fastapi.exceptions import RequestValidationError
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi.responses import FileResponse, HTMLResponse, JSONResponse
+from fastapi.responses import FileResponse, HTMLResponse, JSONResponse, RedirectResponse
 from filelock import FileLock, Timeout
 from starlette.datastructures import UploadFile
 from starlette.exceptions import HTTPException
 from starlette.staticfiles import StaticFiles
 
 from . import models
+from .access import has_access, install_access
 from .config import ROOT, Settings
 from .errors import APIError
 from .exports import csv_report, html_report
@@ -61,6 +62,7 @@ def create_app(settings=None, *, engine=None, parser=None):
         raise RuntimeError("Contract checksum mismatch; coordinate a versioned update")
     contract = json.loads(contract_bytes)
     app.openapi = lambda: contract
+    install_access(app, settings)
     app.add_middleware(SafetyMiddleware, max_file_bytes=settings.max_file_bytes)
     if settings.allowed_origins:
         app.add_middleware(
@@ -242,9 +244,11 @@ def create_app(settings=None, *, engine=None, parser=None):
     app.mount("/backend-assets", StaticFiles(directory=Path(__file__).parent / "static"), name="backend-assets")
 
     @app.get("/{path:path}", include_in_schema=False)
-    async def frontend(path: str):
+    async def frontend(path: str, request: Request):
         if path == "api" or path.startswith("api/"):
             raise APIError(404, "not_found", "API маршруты табылмады.")
+        if not has_access(request, settings):
+            return RedirectResponse("/access", status_code=303)
         root = settings.frontend_dir.resolve()
         target = (root / path).resolve()
         if root not in target.parents and target != root:

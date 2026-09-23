@@ -8,6 +8,9 @@ from ai_engine.config import Settings
 from ai_engine.errors import AnalysisError
 from ai_engine.providers import Provider, HTTPFailure
 from ai_engine.schema import object_schema
+from ai_engine.extraction import extraction_schema
+from ai_engine.sources import SourceRegistry
+from evaluation.control_cases import cases
 
 SCHEMA = object_schema(ok={"type": "boolean"})
 
@@ -41,6 +44,44 @@ class Transport:
 
 
 class ProviderTests(unittest.IsolatedAsyncioTestCase):
+    async def test_wire_source_aliases_restore_only_reference_fields(self):
+        case = cases()[0]
+        document = case.payload["documents"][0]
+        sources = SourceRegistry(case.payload).evidence(
+            [s["id"] for s in document["spans"]]
+        )
+        aliases = {s["id"]: f"S{i + 1}" for i, s in enumerate(sources)}
+        facts = copy.deepcopy(case.facts[document["id"]])
+        facts["units"][0]["id"] = "S1"
+        facts["units"][0]["name"] = "S1"
+        facts["functions"][0]["unit_id"] = "S1"
+        for item in facts["units"] + facts["functions"]:
+            for key in ("source_span_ids", "context_span_ids"):
+                if key in item:
+                    item[key] = [aliases.get(s, s) for s in item[key]]
+            for quote in item["evidence_quotes"]:
+                quote["span_id"] = aliases[quote["span_id"]]
+        facts["coverage"] = [
+            {"span_id": alias, "disposition": "context"} for alias in aliases.values()
+        ]
+        payload = {"sources": sources, "target_span_ids": list(aliases)}
+        original = copy.deepcopy(payload)
+        p, t = self.provider([response(facts)])
+        value = await p.structured(
+            "extract_functions", "test", payload, extraction_schema()
+        )
+        self.assertEqual(payload, original)
+        self.assertEqual(value["units"][0]["id"], "S1")
+        self.assertEqual(value["units"][0]["name"], "S1")
+        self.assertEqual(value["functions"][0]["unit_id"], "S1")
+        self.assertEqual(
+            value["functions"][0]["source_span_ids"],
+            case.facts[document["id"]]["functions"][0]["source_span_ids"],
+        )
+        wire = json.loads(t.calls[0][1]["input"][0]["content"][0]["text"])
+        self.assertEqual(wire["target_span_ids"], list(aliases.values()))
+        self.assertEqual(wire["sources"][0]["raw_text"], sources[0]["raw_text"])
+
     def provider(self, items, **options):
         transport = Transport(items)
 

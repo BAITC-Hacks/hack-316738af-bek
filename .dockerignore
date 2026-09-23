@@ -24,5 +24,12 @@ backend/*
 **/data
 **/*.sqlite*
 **/test-results
+**/local_reports
+**/private_inputs
+**/playwright-report
+**/.tools
+**/tests
+**/integration
+**/docs/screenshots
 **/*.pem
 **/*.key

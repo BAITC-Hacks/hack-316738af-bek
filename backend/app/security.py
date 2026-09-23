@@ -1,22 +1,20 @@
 """Session ownership, request-size limits and browser security headers."""
 
 import hashlib
-import hmac
 import re
 from urllib.parse import urlsplit
 
 from starlette.responses import JSONResponse
 
+from .access import has_access
 from .errors import APIError
 
 COOKIE = "qurylym_session"
 
 
 def owner_for(request, settings, *, create=False):
-    if settings.access_token:
-        supplied = request.headers.get("authorization", "")
-        if not hmac.compare_digest(supplied.encode(), ("Bearer " + settings.access_token).encode()):
-            raise APIError(404, "access_denied", "Қолжетімділік кілті қажет.")
+    if not has_access(request, settings):
+        raise APIError(404, "access_denied", "Қолжетімділік кілті қажет.")
     origin = request.headers.get("origin")
     if origin and request.method not in ("GET", "HEAD", "OPTIONS"):
         actual = urlsplit(str(request.base_url))
@@ -57,7 +55,7 @@ class SafetyMiddleware:
             if message["type"] == "http.response.start":
                 message["headers"] = list(message["headers"]) + [
                     (b"x-content-type-options", b"nosniff"),
-                    (b"referrer-policy", b"no-referrer"),
+                    (b"referrer-policy", b"same-origin" if scope["path"] == "/access" else b"no-referrer"),
                     (b"x-frame-options", b"DENY"),
                     (b"cache-control", b"no-store"),
                 ]

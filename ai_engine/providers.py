@@ -16,6 +16,29 @@ OPENAI_URL = "https://api.openai.com/v1/responses"
 NVIDIA_URL = "https://integrate.api.nvidia.com/v1/embeddings"
 
 
+def compact_sources(payload):
+    """Use short wire labels; keep public/source registry identifiers untouched."""
+    wire = copy.deepcopy(payload)
+    forward = {s["id"]: f"S{i + 1}" for i, s in enumerate(wire["sources"])}
+    for source in wire["sources"]:
+        source["id"] = forward[source["id"]]
+    wire["target_span_ids"] = [forward[sid] for sid in wire["target_span_ids"]]
+    return wire, {alias: original for original, alias in forward.items()}
+
+
+def expand_sources(value, reverse):
+    """Expand reference fields only; never rewrite names, prose or entity IDs."""
+    for item in value["units"] + value["functions"]:
+        for field in ("source_span_ids", "context_span_ids"):
+            if field in item:
+                item[field] = [reverse.get(sid, sid) for sid in item[field]]
+        for quote in item["evidence_quotes"]:
+            quote["span_id"] = reverse.get(quote["span_id"], quote["span_id"])
+    for item in value["coverage"]:
+        item["span_id"] = reverse.get(item["span_id"], item["span_id"])
+    return value
+
+
 class HTTPFailure(Exception):
     def __init__(self, status, retry_after=0):
         self.status = status
@@ -173,6 +196,11 @@ class Provider:
         if cache_key in self.cache:
             self.cache_hits += 1
             return copy.deepcopy(self.cache[cache_key])
+        wire_payload, source_aliases = (
+            compact_sources(payload)
+            if operation == "extract_functions"
+            else (payload, {})
+        )
         body = {
             "model": self.settings.model,
             "instructions": instructions,
@@ -183,7 +211,7 @@ class Provider:
                         {
                             "type": "input_text",
                             "text": json.dumps(
-                                payload, ensure_ascii=False, allow_nan=False
+                                wire_payload, ensure_ascii=False, allow_nan=False
                             ),
                         }
                     ],
@@ -266,6 +294,8 @@ class Provider:
                     + "\nReturn exactly the requested JSON object with every required field."
                 )
                 continue
+            if source_aliases:
+                value = expand_sources(value, source_aliases)
             self.cache[cache_key] = copy.deepcopy(value)
             return value
         raise AssertionError("unreachable")
