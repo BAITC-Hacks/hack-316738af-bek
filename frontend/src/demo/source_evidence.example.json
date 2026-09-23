@@ -1,0 +1,33 @@
+{
+  "document": {
+    "id": "demo-before",
+    "version": "before",
+    "filename": "demo-before.docx",
+    "title": "Жасанды бақылау құжаты",
+    "document_type": "regulation",
+    "edition": null,
+    "source_sha256": "bac62895526588379d9421ffd5c75d0e567e4528147f1c6395985adc4386ad15",
+    "parse_status": "complete",
+    "span_count": 2,
+    "warnings": []
+  },
+  "source": {
+    "id": "b2",
+    "document_id": "demo-before",
+    "raw_text": "Есеп бөлімі ай сайын қызмет есебін дайындауға міндетті.",
+    "section_path": [
+      "Міндеттер"
+    ],
+    "context_span_ids": [],
+    "locator": {
+      "kind": "docx",
+      "clause": "2",
+      "path": "paragraph:2",
+      "page": null,
+      "sheet": null,
+      "cell_range": null
+    },
+    "is_content": true
+  },
+  "context": []
+}

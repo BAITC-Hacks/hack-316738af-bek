@@ -1,0 +1,46 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "synthetic-demo",
+  "analysis_revision": 3,
+  "status": "completed",
+  "documents": [
+    {
+      "id": "demo-before",
+      "version": "before",
+      "filename": "demo-before.docx",
+      "title": "Жасанды бақылау құжаты",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "bac62895526588379d9421ffd5c75d0e567e4528147f1c6395985adc4386ad15",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": []
+    },
+    {
+      "id": "demo-after",
+      "version": "after",
+      "filename": "demo-after.docx",
+      "title": "Жасанды бақылау құжаты",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "8f8b6c0abd7506343189476fe64d567b667a29f2562ad62ee11d9058b4e4708d",
+      "parse_status": "complete",
+      "span_count": 1,
+      "warnings": []
+    }
+  ],
+  "progress": {
+    "stage": "completed",
+    "processed": 2,
+    "total": 2,
+    "message": "Жасанды интерфейс мысалы"
+  },
+  "warnings": [
+    {
+      "code": "SYNTHETIC_UI_EXAMPLE",
+      "message": "Бұл frontend әзірлеуге арналған жасанды жауап. Хэштер нақты файлдан алынбаған; AI шақыруы орындалмаған.",
+      "document_id": null,
+      "span_ids": []
+    }
+  ]
+}
