@@ -1,0 +1,240 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "synthetic-demo",
+  "analysis_revision": 3,
+  "status": "completed",
+  "documents": [
+    {
+      "id": "demo-before",
+      "version": "before",
+      "filename": "demo-before.docx",
+      "title": "Жасанды бақылау құжаты",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "bac62895526588379d9421ffd5c75d0e567e4528147f1c6395985adc4386ad15",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": []
+    },
+    {
+      "id": "demo-after",
+      "version": "after",
+      "filename": "demo-after.docx",
+      "title": "Жасанды бақылау құжаты",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "8f8b6c0abd7506343189476fe64d567b667a29f2562ad62ee11d9058b4e4708d",
+      "parse_status": "complete",
+      "span_count": 1,
+      "warnings": []
+    }
+  ],
+  "units": [
+    {
+      "id": "u-before",
+      "version": "before",
+      "name": "Есеп бөлімі",
+      "aliases": [],
+      "kind": "department",
+      "parent_id": null,
+      "source_span_ids": [
+        "b1"
+      ]
+    },
+    {
+      "id": "u-after",
+      "version": "after",
+      "name": "Есеп бөлімі",
+      "aliases": [],
+      "kind": "department",
+      "parent_id": null,
+      "source_span_ids": [
+        "a1"
+      ]
+    }
+  ],
+  "unit_changes": [
+    {
+      "id": "uc1",
+      "before_unit_ids": [
+        "u-before"
+      ],
+      "after_unit_ids": [
+        "u-after"
+      ],
+      "change_type": "preserved",
+      "basis": "explicit_document",
+      "explanation": "Екі құжатта бөлімше атауы бірдей берілген.",
+      "source_span_ids": [
+        "b1",
+        "a1"
+      ]
+    }
+  ],
+  "functions": [
+    {
+      "id": "fb1",
+      "version": "before",
+      "unit_id": "u-before",
+      "role_id": null,
+      "action": "мұрағаттау",
+      "object": "құжаттар",
+      "scope": null,
+      "modality": "obligation",
+      "conditions": [],
+      "frequency": null,
+      "deliverable": null,
+      "recipient": null,
+      "source_span_ids": [
+        "b1"
+      ],
+      "context_span_ids": []
+    },
+    {
+      "id": "fb2",
+      "version": "before",
+      "unit_id": "u-before",
+      "role_id": null,
+      "action": "дайындау",
+      "object": "қызмет есебі",
+      "scope": null,
+      "modality": "obligation",
+      "conditions": [],
+      "frequency": "ай сайын",
+      "deliverable": null,
+      "recipient": null,
+      "source_span_ids": [
+        "b2"
+      ],
+      "context_span_ids": []
+    },
+    {
+      "id": "fa1",
+      "version": "after",
+      "unit_id": "u-after",
+      "role_id": null,
+      "action": "мұрағаттау",
+      "object": "құжаттар",
+      "scope": null,
+      "modality": "obligation",
+      "conditions": [],
+      "frequency": null,
+      "deliverable": null,
+      "recipient": null,
+      "source_span_ids": [
+        "a1"
+      ],
+      "context_span_ids": []
+    }
+  ],
+  "mappings": [
+    {
+      "id": "m1",
+      "before_function_ids": [
+        "fb1"
+      ],
+      "after_function_ids": [
+        "fa1"
+      ],
+      "coverage_status": "full",
+      "change_flags": [],
+      "uncovered_aspects": [],
+      "explanation": "Міндет кейінгі нұсқада сақталған.",
+      "source_span_ids": [
+        "b1",
+        "a1"
+      ],
+      "context_evidence_ids": []
+    },
+    {
+      "id": "m2",
+      "before_function_ids": [
+        "fb2"
+      ],
+      "after_function_ids": [],
+      "coverage_status": "none",
+      "change_flags": [],
+      "uncovered_aspects": [
+        "Ай сайын қызмет есебін дайындау"
+      ],
+      "explanation": "Жүктелген кейінгі бақылау құжатында есеп дайындау міндеті табылмады.",
+      "source_span_ids": [
+        "b2"
+      ],
+      "context_evidence_ids": []
+    }
+  ],
+  "findings": [
+    {
+      "id": "f1",
+      "analysis_revision": 3,
+      "type": "potential_loss",
+      "risk_change": "new",
+      "title": "Айлық есеп міндеті кейінгі жиында табылмады",
+      "explanation": "Бұрынғы 2-тармақта бар міндет кейінгі толық оқылған бақылау құжатының функцияларынан табылмады.",
+      "severity": "medium",
+      "evidence_ids": [
+        "b2"
+      ],
+      "context_evidence_ids": [],
+      "counterevidence_ids": [],
+      "affected_units": [
+        "u-before",
+        "u-after"
+      ],
+      "recommended_action": {
+        "action": "Қызмет есебін дайындау міндетінің жаңа жауаптысын құжатта нақтылау.",
+        "target_role_id": null,
+        "required_document": "Кейінгі нұсқадағы толық міндеттер тізбесі",
+        "reason": "Жүктелген кейінгі құжатта міндетке сәйкестік жоқ."
+      },
+      "verification_status": "needs_review",
+      "review_status": "unreviewed",
+      "search_scope_document_ids": [
+        "demo-after"
+      ],
+      "search_complete": true
+    }
+  ],
+  "coverage": {
+    "files_total": 2,
+    "files_complete": 2,
+    "files_partial": 0,
+    "files_failed": 0,
+    "before_functions_total": 2,
+    "full": 1,
+    "partial": 0,
+    "none": 1,
+    "unknown": 0,
+    "after_functions_new": 0,
+    "evidence_links_total": 11,
+    "evidence_links_valid": 11
+  },
+  "summary": {
+    "headline": "Жасанды интерфейс мысалы — нақты AI нәтижесі емес",
+    "items": [
+      {
+        "text": "Мұрағаттау міндеті сақталған.",
+        "reference_ids": [
+          "m1"
+        ]
+      },
+      {
+        "text": "Ай сайын есеп дайындау міндеті кейінгі жиында табылмады.",
+        "reference_ids": [
+          "f1",
+          "m2"
+        ]
+      }
+    ]
+  },
+  "usage": [],
+  "warnings": [
+    {
+      "code": "SYNTHETIC_UI_EXAMPLE",
+      "message": "Бұл frontend әзірлеуге арналған жасанды жауап. Хэштер нақты файлдан алынбаған; AI шақыруы орындалмаған.",
+      "document_id": null,
+      "span_ids": []
+    }
+  ]
+}

@@ -1,0 +1,89 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "synthetic-demo",
+  "analysis_revision": 3,
+  "documents": [
+    {
+      "id": "demo-before",
+      "version": "before",
+      "filename": "demo-before.docx",
+      "title": "Жасанды бақылау құжаты",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "bac62895526588379d9421ffd5c75d0e567e4528147f1c6395985adc4386ad15",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "b1",
+          "document_id": "demo-before",
+          "raw_text": "Есеп бөлімі құжаттарды мұрағаттауға міндетті.",
+          "section_path": [
+            "Міндеттер"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "b2",
+          "document_id": "demo-before",
+          "raw_text": "Есеп бөлімі ай сайын қызмет есебін дайындауға міндетті.",
+          "section_path": [
+            "Міндеттер"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    },
+    {
+      "id": "demo-after",
+      "version": "after",
+      "filename": "demo-after.docx",
+      "title": "Жасанды бақылау құжаты",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "8f8b6c0abd7506343189476fe64d567b667a29f2562ad62ee11d9058b4e4708d",
+      "parse_status": "complete",
+      "span_count": 1,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "a1",
+          "document_id": "demo-after",
+          "raw_text": "Есеп бөлімі құжаттарды мұрағаттауға міндетті.",
+          "section_path": [
+            "Міндеттер"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    }
+  ]
+}
