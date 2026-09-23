@@ -12,6 +12,11 @@
 - 32 автоматты тест өтті; `evaluation/engineering_checks.json` — нақты орындалу есебі.
 - Ruff статикалық және формат тексерістері өтті; pip check үйлеспейтін тәуелділік таппады. PR-ға екі операциялық жүйеге арналған CI workflow қосылды.
 - №8/№9 жергілікті 981 paragraph кіріс схемасына тексерілді; түпнұсқалар Git-ке кірмейді.
+- `ba5c79d` commit-інің `core.autocrlf=false` таза жергілікті Git көшірмесінде 32 тест, Ruff check/format және келісім мысалының validation тексеруі қайта өтті. Бұл Windows-та LF checkout арқылы жасалған тексеру; Ubuntu орындалуы деп көрсетілмейді.
+
+## GitHub CI нақты мәртебесі
+
+[Run 35846867576](https://github.com/BAITC-Hacks/hack-316738af-bek/actions/runs/35846867576) екі job үшін де «The job was not started because your account is locked due to a billing issue.» хабарын көрсетті. Job қадамдары басталмаған, execution logs жасалмаған. GitHub-та Windows/Linux тесттері өтті деп есептелмейді. Аккаунт/ұйымның billing мәселесін тиісті әкімші шешкеннен кейін CI қайта жүргізіледі; жоба коды billing баптауын өзгертпейді.
 
 ## Backend иесіне
 
