@@ -1,12 +1,12 @@
 # Qurylym AI
 
-Hackathon team repository for Bek — `BAITC-Hacks/hack-316738af-bek`.
+**Ұйымдық өзгерістерді дереккөздермен тексеретін ЖИ агенті.** HackAlem AI · Bek командасы.
 
 ## 1. Жоба және дайындық күйі
 
-Ұйымдық өзгерістерден кейін функциялардың сақталуын, ауысуын және ықтимал тәуекелдерін дәлелмен тексеруге арналған жоба. Осы жеткізілім — **backend бөлігі**. API келісімі: **1.0.0**.
+Ұйымдық өзгерістерден кейін функциялардың сақталуын, ауысуын және ықтимал тәуекелдерін дәлелмен тексеруге арналған **біріктірілген прототип**. API келісімі: **1.0.0**.
 
-FastAPI, құжат парсерлері, SQLite, AI адаптері, review және экспорт іске асырылған. AI қозғалтқышы (`ai_engine/`) мен frontend (`frontend/`) — басқа екі қатысушының бөлігі; олар ортақ main тармағына енгізілген. Backend сол API келісіміне қосылады. AI модулі бөлек көшірмеде жоқ болса, сервер жасанды қорытынды қайтармайды. Қоғамдық deployed URL жоқ.
+FastAPI, құжат парсерлері, SQLite, AI қозғалтқышы, қазақша frontend, review және экспорт қосылған. Нақты OpenAI арқылы синтетикалық DOCX → нәтиже → дәлел → review → экспорт HTTP сценарийі өтті. Модель сынақтары мен инженерлік тексерулер бөлек көрсетіледі. Қоғамдық deployed URL әзірге жоқ; [Render нұсқаулығы](docs/RELEASE_PLAN.md) дайын.
 
 ## 2. Мәселе және пайдаланушы
 
@@ -22,22 +22,29 @@ FastAPI, құжат парсерлері, SQLite, AI адаптері, review ж
 - Нақты AI Python модуліне адаптер; Pydantic және дереккөз/санақ тексеруі.
 - Сессия оқшаулауы, қызметкер шешімдерінің тарихы, қауіпсіз HTML/CSV есептері.
 - Қазақша сервер беті, `/docs`, `/openapi.json`; frontend build дайын болса сол origin-нен ұсынылады.
+- Бөлімшелердің сақталуы/өзгерісі, функциялардың ауысуы/ықтимал жоғалуы, қайталану және мүдделер қақтығысын AI арқылы талдау.
+- Дәйексөз бен ID тексеруі, бөлек семантикалық аудит, белгісіз/ішінара қамтуды көрсету, нақты сұрау/токен есебі.
+- Desktop/mobile интерфейс, дәлел панелі, қызметкер шешімі; қорғалған демо үшін `/access` арқылы кодпен кіру.
 
 ## 4. Негізгі пайдаланушы жолы
 
-1. `POST /api/analyses` → session cookie және `analysis_id`.
-2. `POST /api/analyses/{id}/documents` → multipart `version=before|after`, `file`.
-3. `POST /api/analyses/{id}/run` → `{"expected_revision": N}` және жаңа UUID `Idempotency-Key`.
-4. `GET /api/analyses/{id}` → прогресс; аяқталған соң `GET .../results`.
-5. `GET .../sources/{span_id}` → түпнұсқа және контекст; `GET .../documents/{document_id}/download` → файл.
-6. `PATCH .../findings/{finding_id}` → `analysis_revision`, `review_status`, `note`.
-7. `GET .../export?format=html` немесе `csv` → есеп.
+1. Сайтты ашыңыз; кіру коды орнатылса, команда берген бөлек кодпен кіріңіз.
+2. «Дейін» тобына ескі, «Кейін» тобына жаңа құжаттарды жүктеңіз.
+3. Оқу диагностикасын қарап, талдауды бастаңыз.
+4. Құрылым, функциялар және тәуекелдер нәтижелерін қараңыз. `partial` — талдау толық емес; `unknown` — сәйкестікке дерек жеткіліксіз.
+5. Қорытындыдағы дәлелді ашып, түпнұсқа тармақ пен контексті тексеріңіз.
+6. Қызметкер шешімін және түсініктемені сақтаңыз.
+7. HTML немесе CSV есепті жүктеп алыңыз.
+
+API маршруттары мен сұрау мысалдары іске қосылған сервердің `/docs` бетінде және [ортақ келісімде](contracts/openapi.json) бар. Frontend-тегі арнайы demo режимі жасанды деректерді көрсетеді, нақты файлдарды талдамайды және анық белгіленеді. Нақты API қатесі демо нәтижесімен ауыстырылмайды.
 
 Желі үзіліп, run қайта жіберілсе **сол** idempotency кілтін пайдаланыңыз. Failed жұмысты әдейі қайта бастау үшін жаңа кілт керек. 409 болса күйді жаңартыңыз. Құжат қосылса/тобы өзгерсе revision артады; ескі нәтиже жаңа нұсқаға көшірілмейді.
 
 ## 5. Технологиялар
 
-Python 3.14; FastAPI/Pydantic; SQLite WAL; python-docx/OOXML; pypdf; openpyxl; defusedxml; uvicorn. Дәл тексерілген нұсқалар [backend/requirements.txt](backend/requirements.txt) және [backend/requirements-dev.txt](backend/requirements-dev.txt) файлдарында бекітілген. Python 3.12/3.13 бөлек тексерілген жоқ.
+Python 3.11+; FastAPI/Pydantic; SQLite WAL; python-docx/OOXML; pypdf; openpyxl; defusedxml; uvicorn. Біріктірілген сервер Python 3.11.9-та, AI инженерлік тесттері Python 3.12-де тексерілді; backend бастапқы жеткізілімі Python 3.14-те тексерілген. Docker Python 3.14 қолданады, контейнерлік build бөлек қабылдауды талап етеді.
+
+Frontend: React 19, TypeScript, Vite 8, Tailwind CSS, AJV; Node 22.12+. AI: OpenAI Responses (`gpt-4.1`, strict JSON Schema), қажет болса NVIDIA embeddings. Нұсқалар `backend/requirements*.txt`, `ai_engine/requirements*.txt` және `frontend/package-lock.json` ішінде бекітілген.
 
 Файл жүктеу және парсинг үшін [FastAPI](https://fastapi.tiangolo.com/tutorial/request-files/), [pypdf](https://pypdf.readthedocs.io/en/stable/user/extract-text.html), [openpyxl](https://openpyxl.readthedocs.io/en/stable/) құжаттары пайдаланылды.
 
@@ -57,7 +64,7 @@ flowchart LR
 
 `backend/app/main.py` — HTTP; `parsers.py` — оқу; `storage.py` — транзакциялар; `workers.py` — жеке процестер; `validation.py` — AI шекарасы; `exports.py` — есеп. Бір `DATA_DIR` үшін тек **бір worker**: файл құлпы екінші серверді тоқтатады. SQLite транзакциясы бүкіл серверде бір active job болуын қорғайды. Құжат/AI жұмысы API оқиғалар циклінен тыс орындалады.
 
-AI иесі репозиторий түбіне `ai_engine/` және `requirements.txt` қосады:
+AI модулінің public интерфейсі:
 
 ```python
 async def analyze(payload: dict, emit_progress=None) -> dict:
@@ -74,19 +81,23 @@ Frontend иесі `frontend/package.json`, `package-lock.json` және `npm run
 ```powershell
 python -m venv backend\.venv
 backend\.venv\Scripts\python -m pip install --upgrade pip==26.2.1
-backend\.venv\Scripts\python -m pip install -r backend/requirements-dev.txt
-Copy-Item .env.example .env
+backend\.venv\Scripts\python -m pip install -r backend/requirements-dev.txt -r ai_engine/requirements.txt
+npm.cmd ci --prefix frontend
+npm.cmd run build --prefix frontend
+if (-not (Test-Path -LiteralPath .env)) { Copy-Item .env.example .env }
 backend\.venv\Scripts\python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --workers 1 --env-file .env
 ```
 
-`.env` бұрын бар болса, көшіріп үстінен жазбаңыз. Кейін іске қосу: `backend\.venv\Scripts\python -m backend.scripts.start`. Бет: **http://127.0.0.1:8000**, API: **http://127.0.0.1:8000/docs**.
+Серверді іске қоспас бұрын `.env` ішіндегі `OPENAI_API_KEY` мәнін енгізіңіз; `OPENAI_MODEL=gpt-4.1`. Жария демода `APP_ACCESS_TOKEN` үшін бөлек кездейсоқ код орнатыңыз. [Кілттерді баптау](ai_engine/API_SETUP.md). Кейін іске қосу: `backend\.venv\Scripts\python -m backend.scripts.start`. Бет: **http://127.0.0.1:8000**, API: **http://127.0.0.1:8000/docs**.
 
 Linux/macOS:
 
 ```bash
-python3.14 -m venv backend/.venv
+python3 -m venv backend/.venv
 backend/.venv/bin/python -m pip install --upgrade pip==26.2.1
-backend/.venv/bin/python -m pip install -r backend/requirements-dev.txt
+backend/.venv/bin/python -m pip install -r backend/requirements-dev.txt -r ai_engine/requirements.txt
+npm ci --prefix frontend
+npm run build --prefix frontend
 cp -n .env.example .env
 backend/.venv/bin/python -m uvicorn backend.app.main:app --host 127.0.0.1 --port 8000 --workers 1 --env-file .env
 ```
@@ -114,7 +125,7 @@ Docker frontend бар болса оны құрады, AI requirements бар б
 | `NVIDIA_API_KEY`, `NVIDIA_EMBED_MODEL`, `NVIDIA_ENABLED` | Embeddings конфигурациясы |
 | `ANALYSIS_TIMEOUT_SECONDS` | Жалпы AI процесіне уақыт шегі, әдепкі 300 с |
 | `DATA_DIR` | DB/түпнұсқа/review; әдепкі `backend/data` |
-| `APP_ACCESS_TOKEN` | Қорғалған орта үшін `Authorization: Bearer ...` |
+| `APP_ACCESS_TOKEN` | Қазылардың `/access` бетіне енгізетін бөлек коды; API үшін Bearer де қолданылады |
 | `COOKIE_SECURE` | HTTPS артында `true`; localhost HTTP үшін `false` |
 | `CORS_ORIGINS` | Бөлек dev origin-дер, үтірмен; `*` қабылданбайды |
 
@@ -126,9 +137,13 @@ Docker frontend бар болса оны құрады, AI requirements бар б
 
 Әр session cookie — кездейсоқ 256-bit токен, DB-де хэші сақталады. Дереккөз/түпнұсқа/review/export analysis пен session бойынша тексеріледі. Түпнұсқа SQLite BLOB ретінде өзгеріссіз сақталады. Құжаттар автоматты жойылмайды; осы MVP-де retention/пайдаланушыларды басқару жоқ. Нақты ортада қолжетімділікті шектеңіз, HTTPS және қорғалған сақтауды қолданыңыз. Windows-та process timeout бар; Linux контейнерінде қосымша жад шегі бар.
 
-Репозиторийде тек **жасанды** [бақылау құжаттары](backend/tests/fixtures) бар. Үлгілерді қайта құру: `backend\.venv\Scripts\python backend/scripts/make_fixtures.py`. Түпнұсқа №8/№9 құжаттары берілмеген және жарияланбаған.
+Репозиторийде тек **жасанды** [бақылау құжаттары](backend/tests/fixtures) бар. Үлгілерді қайта құру: `backend\.venv\Scripts\python backend/scripts/make_fixtures.py`. Түпнұсқа №8/№9 құжаттары жергілікті парсермен тексерілді: әрқайсысы 496 үзінді; №8-де бос тармақ туралы диагностика бар. Түпнұсқалар Git-ке жарияланбаған.
 
 ## 10. Тесттер және қабылдау
+
+**Қазылардың алғашқы тексеруі:** [before.docx](backend/tests/fixtures/before.docx) файлын «Дейін», [after.docx](backend/tests/fixtures/after.docx) файлын «Кейін» тобына жүктеңіз. Бұл — жасанды бақылау құжаттары. Тоқсандық тәуекел есебі Audit бөлімінен Risk бөліміне ауысады; бес жылдық мұрағаттау міндеті кейінгі құжатта берілмеген. §1.1/§1.2 дәлелдерін ашып, қызметкер шешімін сақтаңыз және экспортты жүктеңіз. Жоғалу қорытындысы тек жүктелген құжаттар жиынына қатысты.
+
+Қайта атау, бөліну/бірігу, қайталану, қайшылық, әртүрлі ауқым және тыйым үшін бөлек 15 бақылау сценарийі бар. Олардың күтілетін жауаптары модельге жіберілмейді. **[Нақты тексеру есебі](docs/VERIFICATION.md)** инженерлік нәтиже мен модель сапасын бөлек көрсетеді.
 
 ```powershell
 backend\.venv\Scripts\python -m backend.scripts.verify
@@ -146,4 +161,4 @@ backend\.venv\Scripts\python -m backend.scripts.smoke --require-engine
 
 OCR/SmartArt, суреттегі ұйым құрылымы, DOC/XLS конвертациясы, күрделі Word field/restart нөмірлеудің барлық түрі, нақты бенчмаркинг қамтылмаған. Графика және аяқталмаған парсинг ашық көрсетіледі. Құжаттағы дата/түрі — эвристикалық metadata; құқықтық басымдық емес. Дәлел ID-сының дұрыстығы қорытындының мағынасын автоматты растамайды.
 
-Нақты API кілттері және түпнұсқа құжаттармен толық өнімнің live сценарийін бөлек тексеру қажет. Визуалды браузер QA орындалмады. Backend жұмыс тармағы — `team/backend`; біріктіру негізі — main commit `768f483d17242f8b004d091a299177899936bcb6`. [Тапсыру нұсқаулығы](backend/HANDOFF.md) қайта орнату мен интеграцияны сипаттайды. Бірінші орын немесе абсолютті қатесіздік туралы кепіл берілмейді.
+Бір live сынақта 15/15 өтті, бірақ соңғы толық қайталауда 11/15: модель нәтижесі тұрақсыз. Көлемді №8/№9 талдауы 900 с уақыт шегіне тірелді. Бұл ақаулар мен қайта тексеру нәтижелері [тексеру есебінде](docs/VERIFICATION.md) ашық көрсетілген. Frontend-тің 31 unit/API, 30 имитацияланған браузер сценарийі, backend-пен нақты HTTP және браузер сценарийі өтті. [Ортақ қабылдау және жариялау жоспары](docs/RELEASE_PLAN.md) қалған қадамдарды сипаттайды. Нақты deployed сілтеме жариялау тексерілгеннен кейін осы бөлімге қосылады.

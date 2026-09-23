@@ -18,7 +18,7 @@ class Settings:
     max_text_chars: int = 500_000
     max_spans: int = 20_000
     max_archive_bytes: int = 100 * 1024 * 1024
-    access_token: str = field(default_factory=lambda: os.getenv("APP_ACCESS_TOKEN", ""))
+    access_token: str = field(default_factory=lambda: os.getenv("APP_ACCESS_TOKEN", ""), repr=False)
     secure_cookie: bool = field(default_factory=lambda: os.getenv("COOKIE_SECURE", "false").lower() == "true")
     allowed_origins: tuple[str, ...] = field(
         default_factory=lambda: tuple(s.strip() for s in os.getenv("CORS_ORIGINS", "").split(",") if s.strip())

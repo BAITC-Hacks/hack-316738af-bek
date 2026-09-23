@@ -78,6 +78,28 @@ class PipelineTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["coverage"]["unknown"], 1)
         self.assertFalse(any(f["type"] == "potential_loss" for f in result["findings"]))
 
+    async def test_role_in_department_slot_preserves_evidenced_actor(self):
+        position = unit("Аудитор", "r", kind="role")
+        task = duty("check", "r", "тексеру", "есеп")
+        case = make_case(
+            "role-slot", [position], [task], [position], [task], {"check": ["check"]}
+        )
+        provider = FixtureProvider(case)
+        result = await self.run_case(case, provider)
+        self.assertEqual(result["status"], "completed")
+        self.assertTrue(
+            all(f["unit_id"] is None and f["role_id"] for f in result["functions"])
+        )
+        self.assertEqual({u["kind"] for u in result["units"]}, {"role"})
+        for op, payload in provider.calls:
+            if op == "audit_extraction":
+                self.assertTrue(
+                    all(
+                        f["unit_id"] is None and f["role_id"]
+                        for f in payload["functions"]
+                    )
+                )
+
     async def test_fabricated_quote_quarantines_chunk(self):
         case = cases()[0]
 
@@ -95,6 +117,29 @@ class PipelineTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["coverage"]["unknown"], 1)
         self.assertIn("QUOTE_INVALID", {w["code"] for w in result["warnings"]})
         self.assertFalse(any(f["version"] == "after" for f in result["functions"]))
+
+    async def test_invalid_quote_retries_once_then_audits_regenerated_evidence(self):
+        case = cases()[0]
+
+        class Corrected(FixtureProvider):
+            def respond(self, operation, payload):
+                data = super().respond(operation, payload)
+                if (
+                    operation == "extract_functions"
+                    and payload["version"] == "after"
+                    and "correction" not in payload
+                ):
+                    data["functions"][0]["evidence_quotes"][0]["quote"] = (
+                        "NONVERBATIM SUMMARY..."
+                    )
+                return data
+
+        provider = Corrected(case)
+        result = await self.run_case(case, provider)
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(result["coverage"]["full"], 1)
+        self.assertEqual(sum(op == "extract_functions" for op, _ in provider.calls), 3)
+        self.assertEqual(sum(op == "audit_extraction" for op, _ in provider.calls), 2)
 
     async def test_semantic_audit_rejects_unsupported_object(self):
         case = cases()[0]

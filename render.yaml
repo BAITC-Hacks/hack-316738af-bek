@@ -1,0 +1,33 @@
+services:
+  - type: web
+    name: qurylym-ai
+    runtime: docker
+    plan: free
+    branch: main
+    dockerfilePath: ./Dockerfile
+    dockerContext: .
+    healthCheckPath: /api/health
+    autoDeployTrigger: "off"
+    envVars:
+      - key: OPENAI_API_KEY
+        sync: false
+      - key: OPENAI_MODEL
+        value: gpt-4.1
+      - key: NVIDIA_ENABLED
+        value: "false"
+      - key: APP_ACCESS_TOKEN
+        sync: false
+      - key: COOKIE_SECURE
+        value: "true"
+      - key: FORWARDED_ALLOW_IPS
+        value: "*"
+      - key: DATA_DIR
+        value: /data
+      - key: ANALYSIS_TIMEOUT_SECONDS
+        value: "900"
+      - key: AI_MAX_REQUESTS
+        value: "300"
+      - key: AI_MAX_OUTPUT_TOKENS
+        value: "20000"
+      - key: AI_REQUEST_TIMEOUT_SECONDS
+        value: "120"
