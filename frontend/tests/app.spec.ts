@@ -11,6 +11,36 @@ const state = () => structuredClone(stateFixture) as AnalysisState;
 const result = () => structuredClone(resultFixture) as AnalysisResult;
 const json = (route: Route, data: unknown, status = 200) =>
   route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(data) });
+
+test('sample downloads contain the judge documents and never start paid analysis', async ({
+  page,
+}) => {
+  let analysisCalls = 0;
+  await page.route('**/api/**', (route) => {
+    if (!route.request().url().endsWith('/health')) analysisCalls++;
+    return json(route, {
+      status: 'ok',
+      schema_version: '1.0.0',
+      openai_configured: false,
+      nvidia_configured: false,
+    });
+  });
+  await page.goto('/');
+  for (const [version, label] of [
+    ['before', 'Дейінгі құжат'],
+    ['after', 'Кейінгі құжат'],
+  ]) {
+    const downloading = page.waitForEvent('download');
+    await page.getByRole('link', { name: label, exact: true }).click();
+    const downloaded = await downloading;
+    expect(downloaded.suggestedFilename()).toBe(`qurylym-${version}.docx`);
+    const actual = await readFile((await downloaded.path())!);
+    const expected = await readFile(`../backend/tests/fixtures/judge/${version}.docx`);
+    expect(actual.equals(expected)).toBe(true);
+  }
+  expect(analysisCalls).toBe(0);
+});
+
 async function fixtureApi(
   page: Page,
   options: {

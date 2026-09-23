@@ -1,6 +1,7 @@
 """Exhaustive partition search, multi-aspect matching and explicit reorganization."""
 
 import asyncio
+import json
 import re
 
 from . import prompts
@@ -80,6 +81,54 @@ def function_record(function, registry):
             unique(function["source_span_ids"] + function["context_span_ids"])
         ),
     }
+
+
+def comparison_payload(before, after, units, registry):
+    """Share exact source excerpts while retaining each function's full context."""
+    sources = {}
+
+    def record(function):
+        full = function_record(function, registry)
+        evidence = full.pop("evidence")
+        sources.update((source["id"], source) for source in evidence)
+        return {**full, "evidence_span_ids": [s["id"] for s in evidence]}
+
+    return {
+        "before": [record(f) for f in before],
+        "after": [record(f) for f in after],
+        "units": units,
+        "sources": list(sources.values()),
+    }
+
+
+def comparison_partitions(functions, registry, max_chars):
+    """Bound each after partition by unique evidence size, without dropping text."""
+    current, seen, size = [], set(), 4
+    for function in functions:
+        record = function_record(function, registry)
+        evidence = record.pop("evidence")
+        record["evidence_span_ids"] = [s["id"] for s in evidence]
+        record_size = len(json.dumps(record, ensure_ascii=False)) + 2
+        evidence_sizes = {
+            s["id"]: len(json.dumps(s, ensure_ascii=False)) + 2 for s in evidence
+        }
+        if 4 + record_size + sum(evidence_sizes.values()) > max_chars:
+            raise AnalysisError(
+                "ITEM_TOO_LARGE",
+                "Бір функцияның дәлелдері тым үлкен; мәтін үнсіз қысқартылмады.",
+            )
+        additional = record_size + sum(
+            count for sid, count in evidence_sizes.items() if sid not in seen
+        )
+        if current and size + additional > max_chars:
+            yield current
+            current, seen, size = [], set(), 4
+            additional = record_size + sum(evidence_sizes.values())
+        current.append(function)
+        seen.update(evidence_sizes)
+        size += additional
+    if current:
+        yield current
 
 
 def names(unit):
@@ -270,11 +319,7 @@ async def compare_functions(
 
             ordered_after.sort(key=score, reverse=True)
         after_parts = list(
-            pack_chunks(
-                ordered_after,
-                settings.comparison_chars,
-                lambda f: function_record(f, registry),
-            )
+            comparison_partitions(ordered_after, registry, settings.comparison_chars)
         )
         if not after_parts:
             after_parts = [[]]
@@ -283,11 +328,7 @@ async def compare_functions(
                 response = await provider.structured(
                     "match_functions",
                     prompts.MATCH,
-                    {
-                        "before": [function_record(f, registry) for f in batch],
-                        "after": [function_record(f, registry) for f in partition],
-                        "units": units,
-                    },
+                    comparison_payload(batch, partition, units, registry),
                     MATCH_SCHEMA,
                 )
                 decisions = _decisions(
@@ -343,11 +384,9 @@ async def compare_functions(
                     "verify_matches",
                     prompts.VERIFY_MATCH,
                     {
-                        "before": [function_record(f, registry) for f in batch],
-                        "after": [
-                            function_record(after_map[i], registry) for i in candidates
-                        ],
-                        "units": units,
+                        **comparison_payload(
+                            batch, [after_map[i] for i in candidates], units, registry
+                        ),
                         "proposed": initial,
                         "partition_search_complete": search_ok and complete["after"],
                     },
