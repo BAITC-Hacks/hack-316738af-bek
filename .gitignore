@@ -1,0 +1,22 @@
+# Secrets and uploaded business documents
+.env
+.env.*
+!.env.example
+backend/data/
+*.sqlite*
+*.db
+# Local Python tooling and generated reports
+.venv/
+.verify-venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.ruff_cache/
+.coverage*
+htmlcov/
+backend/test-results/
+backend/delivery/
+node_modules/
+frontend/dist/
+.DS_Store
+Thumbs.db
