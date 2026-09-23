@@ -268,6 +268,27 @@ export function Upload({ state, busy, demo, upload, move, run, openDemo }: Props
           </button>
         </div>
       </section>
+      <section className="sample-documents" aria-labelledby="sample-documents-title">
+        <div>
+          <h3 id="sample-documents-title">Бақылау құжаттарымен тексеріңіз</h3>
+          <p>
+            Екі DOCX файлын жүктеп, тиісті топтарға қосыңыз. Қайта атау, ықтимал жоғалу және
+            қайталану бар жасанды мысал; талдау OpenAI API арқылы орындалады.
+          </p>
+        </div>
+        <div className="sample-document-links">
+          <a
+            className="button secondary"
+            href="/samples/before.docx"
+            download="qurylym-before.docx"
+          >
+            <ArrowDownToLine size={16} /> Дейінгі құжат
+          </a>
+          <a className="button secondary" href="/samples/after.docx" download="qurylym-after.docx">
+            <ArrowDownToLine size={16} /> Кейінгі құжат
+          </a>
+        </div>
+      </section>
       <div className="bottom-grid">
         <section className="demo-card">
           <span className="demo-icon">

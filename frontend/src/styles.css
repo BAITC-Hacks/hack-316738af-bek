@@ -813,6 +813,39 @@ main {
   gap: 20px;
   margin-top: 23px;
 }
+.sample-documents {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 20px;
+  padding: 18px;
+  border: 1px solid #dde7db;
+  border-radius: 9px;
+  background: #fff;
+}
+.sample-documents > div:first-child {
+  flex: 1 1 280px;
+}
+.sample-documents h3 {
+  font-size: 14px;
+  color: #354b30;
+}
+.sample-documents p {
+  margin-top: 6px;
+  font-size: 12px;
+  line-height: 1.7;
+  color: #53614e;
+}
+.sample-document-links {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+.sample-document-links .button {
+  font-size: 12px;
+}
 .demo-card {
   border: 1px solid #dde7db;
   display: flex;
