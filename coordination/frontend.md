@@ -99,3 +99,13 @@ Generated `dist/`, тест есептері, node_modules, portable tools жә�
 | Қазы қайта іске қоса ала ма? | Lock-файл, таза npm ci + build, README | Ортақ Docker, backend конфигурациясы және Git remote |
 
 Қазы ұпайы, бірінші орын немесе толық өнімнің қатесіздігі туралы кепіл берілмейді. Frontend өз шекарасында дайын; толық өнімге live интеграциялық қабылдау қажет. Келісімнің note оқу және metadata өңдеу шектеулері requests файлында нақты тіркелген.
+
+## GitHub жеткізуі
+
+- Аккаунт: `Aslanxz008`.
+- Тармақ: [team/frontend](https://github.com/BAITC-Hacks/hack-316738af-bek/tree/team/frontend).
+- Frontend кодының commit-і: [`26a10196ca0d1a4f4e25967a2fe46f498e5ffc12`](https://github.com/BAITC-Hacks/hack-316738af-bek/commit/26a10196ca0d1a4f4e25967a2fe46f498e5ffc12).
+- 44 файл: frontend, оның тесттері/нұсқаулығы және екі coordination есебі. Main, backend және AI тармақтары өзгертілмеді.
+- GitHub жұмыс көшірмесінде `npm ci`, `npm run build`, `npm test` қайта орындалды: 31 тест өтті, production жинағы бұрын тексерілген жинақпен сәйкес.
+- `frontend/.gitattributes` қосылды; мысалдардың жол аяқталуы генераторда LF-ке келтіріледі. Windows/Linux checkout айырмасы contract тексеруін бұзбайды. Ортақ `contracts/openapi.json` байттары өзгертілмеді.
+- Ортақ біріктіру үшін `team/ai-engine` ішіндегі contracts және backend тармағы әлі қажет. Frontend тармағын main-ге біріктіру — командалық интеграция қадамы.
