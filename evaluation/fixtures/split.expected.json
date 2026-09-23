@@ -1,0 +1,21 @@
+{
+  "name": "split",
+  "links": {
+    "before:fn:both": [
+      "after:fn:archive",
+      "after:fn:invoices"
+    ]
+  },
+  "flags": {
+    "before:fn:both": [
+      "split"
+    ]
+  },
+  "coverages": {},
+  "risks": [],
+  "expectations": {
+    "full": 1,
+    "split": 1,
+    "loss": 0
+  }
+}

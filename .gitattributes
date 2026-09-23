@@ -1,0 +1,2 @@
+# Preserve the exact bytes of the team's SHA-256 frozen API contract on every OS.
+/contracts/openapi.json -text whitespace=cr-at-eol

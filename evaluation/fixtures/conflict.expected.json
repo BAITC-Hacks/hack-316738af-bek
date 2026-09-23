@@ -1,0 +1,22 @@
+{
+  "name": "conflict",
+  "links": {
+    "before:fn:execute": [
+      "after:fn:execute"
+    ]
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [
+    {
+      "source_ids": [
+        "after:fn:audit",
+        "after:fn:execute"
+      ],
+      "kind": "conflict"
+    }
+  ],
+  "expectations": {
+    "conflict": 1
+  }
+}

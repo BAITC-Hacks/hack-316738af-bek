@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "control-rename",
+  "analysis_revision": 1,
+  "documents": [
+    {
+      "id": "before-document",
+      "version": "before",
+      "filename": "rename-before.docx",
+      "title": "Жасанды бақылау: rename",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "b36daa5f8f3779e277f4da4f0836a67f0c58c2c4bdf1327a26410ba11290031c",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "before:unit:a",
+          "document_id": "before-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:fn:archive",
+          "document_id": "before-document",
+          "raw_text": "Есеп бөлімі: Келісімшарттарды мұрағаттауға міндетті.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "before:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    },
+    {
+      "id": "after-document",
+      "version": "after",
+      "filename": "rename-after.docx",
+      "title": "Жасанды бақылау: rename",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "6a7cbcae8a837121d550dcd3554d47db211b96e72374c83e332d92462ea16890",
+      "parse_status": "complete",
+      "span_count": 3,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "after:unit:z",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Құжаттарды сақтау бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:renamed",
+          "document_id": "after-document",
+          "raw_text": "Құжаттарды сақтау бөлімі: Келісімшарттарды мұрағаттауға міндетті.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:z"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:rule:0",
+          "document_id": "after-document",
+          "raw_text": "Өкім: Есеп бөлімін Құжаттарды сақтау бөлімі деп қайта атау.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "9",
+            "path": "paragraph:3",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    }
+  ]
+}

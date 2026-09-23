@@ -1,0 +1,23 @@
+{
+  "name": "frequency",
+  "links": {
+    "before:fn:report": [
+      "after:fn:yearly"
+    ]
+  },
+  "flags": {
+    "before:fn:report": [
+      "frequency_changed"
+    ]
+  },
+  "coverages": {
+    "before:fn:report": "partial"
+  },
+  "risks": [],
+  "expectations": {
+    "full": 0,
+    "partial": 1,
+    "loss": 1,
+    "frequency_changed": 1
+  }
+}

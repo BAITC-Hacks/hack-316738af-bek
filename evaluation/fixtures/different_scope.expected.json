@@ -1,0 +1,15 @@
+{
+  "name": "different_scope",
+  "links": {
+    "before:fn:it": [
+      "after:fn:it"
+    ]
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [],
+  "expectations": {
+    "duplicate": 0,
+    "loss": 0
+  }
+}

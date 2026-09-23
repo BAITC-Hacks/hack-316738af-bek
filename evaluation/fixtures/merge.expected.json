@@ -1,0 +1,19 @@
+{
+  "name": "merge",
+  "links": {
+    "before:fn:archive": [
+      "after:fn:both"
+    ],
+    "before:fn:invoices": [
+      "after:fn:both"
+    ]
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [],
+  "expectations": {
+    "full": 2,
+    "merged": 2,
+    "loss": 0
+  }
+}

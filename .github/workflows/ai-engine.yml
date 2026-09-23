@@ -1,0 +1,40 @@
+name: AI engine checks
+
+on:
+  pull_request:
+    paths:
+      - 'ai_engine/**'
+      - 'evaluation/**'
+      - 'contracts/**'
+      - '.gitattributes'
+      - '.github/workflows/ai-engine.yml'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  engineering:
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - os: ubuntu-latest
+            python: '3.11'
+          - os: windows-latest
+            python: '3.12'
+    runs-on: ${{ matrix.os }}
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@v7
+        with:
+          python-version: ${{ matrix.python }}
+      - run: python -m pip install -r ai_engine/requirements-dev.txt
+      - run: python -m pip check
+      - run: python -m ruff check --no-cache ai_engine evaluation
+      - run: python -m ruff format --check --no-cache ai_engine evaluation
+      - run: python -X utf8 -m evaluation.check
+      - run: python -X utf8 -m ai_engine --input contracts/analysis_input.example.json --validate-only
