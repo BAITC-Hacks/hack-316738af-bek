@@ -31,3 +31,7 @@ services:
         value: "20000"
       - key: AI_REQUEST_TIMEOUT_SECONDS
         value: "120"
+      - key: AI_CONCURRENCY
+        value: "3"
+      - key: AI_MAX_RISK_PAIRS
+        value: "200"

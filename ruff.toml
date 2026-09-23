@@ -1,0 +1,9 @@
+# Keep the AI module's original Ruff 0.13 rule set explicit across tool versions.
+# backend/pyproject.toml retains the backend team's stricter import-order rules.
+target-version = "py311"
+line-length = 88
+include = ["*.py", "*.pyi"]
+extend-exclude = [".venv", "node_modules", "test-results", "local_reports", "private_inputs"]
+
+[lint]
+select = ["E4", "E7", "E9", "F"]

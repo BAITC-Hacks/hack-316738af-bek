@@ -2,6 +2,8 @@ import { test, expect } from '@playwright/test';
 import { fileURLToPath } from 'node:url';
 
 test('real server: access → DOCX → AI → evidence → review → exports', async ({ page }) => {
+  const judge = process.env.LIVE_FIXTURE_SET === 'judge';
+  const fixtures = judge ? '../../backend/tests/fixtures/judge/' : '../../backend/tests/fixtures/';
   const errors: string[] = [];
   page.on('pageerror', (error) => errors.push(error.message));
   await page.goto('/');
@@ -21,16 +23,12 @@ test('real server: access → DOCX → AI → evidence → review → exports', 
   );
   await page
     .getByLabel('Дейін құжаттарын таңдау')
-    .setInputFiles(
-      fileURLToPath(new URL('../../backend/tests/fixtures/before.docx', import.meta.url)),
-    );
+    .setInputFiles(fileURLToPath(new URL(`${fixtures}before.docx`, import.meta.url)));
   const state = await (await created).json();
   await expect(page.getByRole('status')).toContainText('1 файл жүктелді');
   await page
     .getByLabel('Кейін құжаттарын таңдау')
-    .setInputFiles(
-      fileURLToPath(new URL('../../backend/tests/fixtures/after.docx', import.meta.url)),
-    );
+    .setInputFiles(fileURLToPath(new URL(`${fixtures}after.docx`, import.meta.url)));
   await expect(page.getByRole('button', { name: 'Салыстыруды бастау' })).toBeEnabled();
   await page.getByRole('button', { name: 'Салыстыруды бастау' }).click();
   await expect(page.getByRole('heading', { name: 'Өзгерістер анық көрінеді.' })).toBeVisible({
@@ -45,6 +43,15 @@ test('real server: access → DOCX → AI → evidence → review → exports', 
     ),
   ).toBeTruthy();
   expect(result.findings.length).toBeGreaterThan(0);
+  if (judge) {
+    expect(result.status).toBe('completed');
+    expect(
+      result.unit_changes.map((change: { change_type: string }) => change.change_type),
+    ).toEqual(expect.arrayContaining(['renamed', 'preserved', 'created']));
+    expect(result.findings.map((finding: { type: string }) => finding.type)).toEqual(
+      expect.arrayContaining(['potential_loss', 'potential_duplicate']),
+    );
+  }
   await page
     .getByRole('button', { name: /Қолдайтын дәлел/ })
     .first()

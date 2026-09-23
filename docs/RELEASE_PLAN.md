@@ -53,13 +53,13 @@ backend\.venv\Scripts\python -m evaluation.run --live --all --env-file .env --ou
 Сервер бір терминалда: `backend\.venv\Scripts\python -m backend.scripts.start`. Басқа терминалда:
 
 ```powershell
-backend\.venv\Scripts\python -m backend.scripts.smoke --require-engine
+backend\.venv\Scripts\python -m backend.scripts.smoke --require-engine --fixture-set judge
 ```
 
 Нақты браузер сценарийі `frontend/integration/live.spec.ts` ішінде. Launcher жергілікті `.env` файлынан кіру кодын оқиды; OpenAI/NVIDIA кілттерін браузерлік тест процесіне бермейді. Тест нақты AI кредитін жұмсайды:
 
 ```powershell
-backend\.venv\Scripts\python -m backend.scripts.live_browser --url http://127.0.0.1:8000 --channel msedge
+backend\.venv\Scripts\python -m backend.scripts.live_browser --url http://127.0.0.1:8000 --channel msedge --fixture-set judge
 ```
 
 Орнатылған Playwright Chromium қолданылса `--channel msedge` параметрін алып тастаңыз. Сервердегі тексеруде `--url` мәнін нақты HTTPS адресімен ауыстырыңыз; жергілікті `.env` ішіндегі кіру коды сервердің `APP_ACCESS_TOKEN` мәніне сәйкес болуы керек. API кілттері серверде қалады.
@@ -69,9 +69,9 @@ backend\.venv\Scripts\python -m backend.scripts.live_browser --url http://127.0.
 Бір **Docker Web Service** frontend жинағын және FastAPI-ды бір origin-де ұсынады. `render.yaml` осы конфигурацияны сипаттайды. Атауы бос болса `qurylym-ai.onrender.com` тәрізді адрес беріледі; нақты URL тек сервис құрылғанда белгілі болады. Бөлек домен сатып алу талап етілмейді. [Render Docker](https://render.com/docs/docker), [FastAPI жариялау](https://render.com/docs/deploy-fastapi).
 
 1. Render аккаунтына кіріңіз. GitHub-ты Render-ге бөлек қосып, **BAITC-Hacks/hack-316738af-bek** private репозиторийіне рұқсат беріңіз. Codex-тегі GitHub қолжетімділігі Render-ге автоматты көшпейді. Repo тізімде болмаса ұйым әкімшісінен Render қолданбасына рұқсат сұрау қажет болуы мүмкін. Репозиторийді public етпеңіз. [Git провайдерін қосу](https://render.com/docs/git-provider).
-2. Тексерілген интеграция PR-ын main-ға біріктіріңіз. Қай commit жарияланатынын тіркеңіз.
+2. GitHub-тағы соңғы тексерілген `main` commit-ін таңдаңыз. Build/deploy бетінде дәл сол commit тұрғанын тексеріңіз.
 3. **New → Blueprint** арқылы осы repo мен `render.yaml` таңдаңыз. Балама: **New → Web Service**, Language **Docker**, branch **main**, Dockerfile **./Dockerfile**, Health Check **/api/health**, plan **Free**. Root directory — репозиторий түбірі.
-4. `OPENAI_API_KEY` мәнін Render Environment-ке енгізіңіз. `OPENAI_MODEL=gpt-4.1`. `APP_ACCESS_TOKEN` — API кілтінен бөлек ұзын кездейсоқ кіру коды; оны қазыларға жеке бересіз. `COOKIE_SECURE=true`. NVIDIA дайын болмаса `NVIDIA_ENABLED=false`.
+4. `OPENAI_API_KEY` мәнін Render Environment-ке енгізіңіз. `OPENAI_MODEL=gpt-4.1`. `APP_ACCESS_TOKEN` — API кілтінен бөлек ұзын кездейсоқ кіру коды; оны қазыларға жеке бересіз. `COOKIE_SECURE=true`. NVIDIA дайын болмаса `NVIDIA_ENABLED=false`. Web Service-ті қолмен құрсаңыз, `render.yaml` ішіндегі барлық Environment мәндерін көшіріңіз: `ANALYSIS_TIMEOUT_SECONDS=900`, `AI_REQUEST_TIMEOUT_SECONDS=120`, `AI_MAX_REQUESTS=300`, `AI_MAX_OUTPUT_TOKENS=20000`, `AI_CONCURRENCY=3`, `AI_MAX_RISK_PAIRS=200`, `DATA_DIR=/data`. Blueprint оларды өзі орнатады.
 5. Blueprint-тағы `FORWARDED_ALLOW_IPS=*` тек Render-дің reverse proxy артындағы сервиске арналған. Тікелей интернетке ашылған жеке серверде тек нақты сенімді proxy IP-лерін беріңіз.
 6. Docker `PORT` айнымалысын қолдайды. Бір worker ғана іске қосылады. Кілттер Dockerfile-ға, frontend build-ке немесе GitHub-қа енгізілмейді.
 7. Build log → startup log → `/api/health` тексеріңіз. Жаңа браузерде `/access` арқылы кіріп, екі synthetic DOCX-ті жүктеп, талдау/дәлел/review/export жолын қайталаңыз. Қазыларға берілетін URL осыдан кейін README мен тапсыру формасына қосылады.
@@ -93,3 +93,7 @@ Render Free 15 минут кіріс трафик болмаса ұйқыға к
 - 30 секунд: live тексеру нәтижесі, шектеулер, қайта іске қосу командасы және URL.
 
 Қазылардың критерийінде deployment үшін бөлек бекітілген ұпай жоқ. Жұмыс істейтін URL шешімді тексеруді жеңілдетеді; негізгі салмақ міндетті сценарий, техникалық сапа және README/қайта іске қосуда. Дедлайнға дейін GitHub push жеткіліксіз: платформада кейсті таңдап, «Шешімді тапсыру» батырмасымен атау/сипаттама/сілтемелерді жіберу қажет.
+
+## 7. Render-ді команда орнатады
+
+Жергілікті `.env` GitHub-қа жіберілмейді. Render-ге кілт пен кіру кодын өзіңіз енгізесіз. GitHub-та жаңа түзету қосылған соң **Manual Deploy → Deploy latest commit** орындаңыз. Тек **Live** мәртебесі жеткіліксіз: жаңа браузерде кіру, бақылау DOCX жұбы, нақты AI нәтиже және экспортты тексеріңіз. Нақты URL мен кіру кодын қазылардың тапсыру формасына беріңіз; API кілтін бермеңіз.

@@ -1,5 +1,6 @@
 """Exhaustive partition search, multi-aspect matching and explicit reorganization."""
 
+import asyncio
 import re
 
 from . import prompts
@@ -244,7 +245,11 @@ async def compare_functions(
     # Small batches keep source-rich verification bounded, while after partitions
     # cover the entire registry rather than a top-k retrieval subset.
     batches = [remaining[i : i + 6] for i in range(0, len(remaining), 6)]
-    for index, batch in enumerate(batches):
+    finished = 0
+
+    async def compare_batch(batch):
+        nonlocal finished
+        batch_mappings, batch_warnings = [], []
         proposals = {f["id"]: [] for f in batch}
         search_ok = True
         ordered_after = list(after)
@@ -294,7 +299,7 @@ async def compare_functions(
                 if exc.code in ("PROVIDER_AUTH", "PROVIDER_REQUEST_REJECTED"):
                     raise
                 search_ok = False
-                warnings.append(diagnostic(exc.code, exc.message))
+                batch_warnings.append(diagnostic(exc.code, exc.message))
         candidates = unique(
             [
                 aid
@@ -352,7 +357,7 @@ async def compare_functions(
             except AnalysisError as exc:
                 if exc.code in ("PROVIDER_AUTH", "PROVIDER_REQUEST_REJECTED"):
                     raise
-                warnings.append(diagnostic(exc.code, exc.message))
+                batch_warnings.append(diagnostic(exc.code, exc.message))
                 search_ok = False
                 verified = [
                     {
@@ -369,7 +374,7 @@ async def compare_functions(
             challenged, ws = await challenge_absence(
                 missing, batch, registry, provider, settings
             )
-            warnings.extend(ws)
+            batch_warnings.extend(ws)
             verified = [
                 {
                     **d,
@@ -405,7 +410,7 @@ async def compare_functions(
                 old["context_span_ids"]
                 + [s for n in new for s in n["context_span_ids"]]
             )
-            mappings.append(
+            batch_mappings.append(
                 {
                     "id": stable_id("map", old["id"], decision["after_ids"]),
                     "before_function_ids": [old["id"]],
@@ -420,12 +425,22 @@ async def compare_functions(
                     "context_evidence_ids": contexts,
                 }
             )
+        finished += 1
         await emit(
             "matching",
-            index + 1,
+            finished,
             len(batches),
             "Бұрынғы функциялар кейінгі барлық бөлімшелермен салыстырылуда.",
         )
+        return batch_mappings, batch_warnings
+
+    for i in range(0, len(batches), settings.concurrency):
+        outputs = await asyncio.gather(
+            *(compare_batch(batch) for batch in batches[i : i + settings.concurrency])
+        )
+        for batch_mappings, batch_warnings in outputs:
+            mappings.extend(batch_mappings)
+            warnings.extend(batch_warnings)
     # Two distinct old atoms covered by one new atom establish a merge;
     # repeated identical clauses alone do not.
     reuse = {}
@@ -513,6 +528,7 @@ async def challenge_absence(proposals, before, registry, provider, settings):
 
 
 async def compare_units(units, registry, provider, settings):
+    all_units = {u["id"]: u for u in units}
     structural = [u for u in units if u["kind"] in ("organization", "department")]
     before = [u for u in structural if u["version"] == "before"]
     after = [u for u in structural if u["version"] == "after"]
@@ -620,7 +636,7 @@ async def compare_units(units, registry, provider, settings):
                 }
             )
             bp, ap = old["parent_id"], new["parent_id"]
-            if bp and ap and not names(lookup[bp]) & names(lookup[ap]):
+            if bp and ap and not names(all_units[bp]) & names(all_units[ap]):
                 changes.append(
                     {
                         "id": stable_id("hier", old["id"], new["id"]),
@@ -631,8 +647,8 @@ async def compare_units(units, registry, provider, settings):
                         "explanation": "Бөлімшенің құжатта көрсетілген бағыныштылығы өзгерген.",
                         "source_span_ids": unique(
                             ev
-                            + lookup[bp]["source_span_ids"]
-                            + lookup[ap]["source_span_ids"]
+                            + all_units[bp]["source_span_ids"]
+                            + all_units[ap]["source_span_ids"]
                         ),
                     }
                 )

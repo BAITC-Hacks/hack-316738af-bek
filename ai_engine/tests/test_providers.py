@@ -7,7 +7,7 @@ from dataclasses import replace
 from ai_engine.config import Settings
 from ai_engine.errors import AnalysisError
 from ai_engine.providers import Provider, HTTPFailure
-from ai_engine.schema import object_schema
+from ai_engine.schema import object_schema, array
 from ai_engine.extraction import extraction_schema
 from ai_engine.sources import SourceRegistry
 from evaluation.control_cases import cases
@@ -44,6 +44,45 @@ class Transport:
 
 
 class ProviderTests(unittest.IsolatedAsyncioTestCase):
+    async def test_comparison_wire_ids_round_trip_without_rewriting_prose(self):
+        schema = object_schema(
+            decisions=array(
+                object_schema(
+                    before_id={"type": "string"},
+                    after_ids=array({"type": "string"}),
+                    explanation={"type": "string"},
+                )
+            )
+        )
+        payload = {
+            "before": [{"id": "fn_very_long_before_identifier", "action": "R1"}],
+            "after": [{"id": "fn_very_long_after_identifier", "action": "R2"}],
+        }
+        original = copy.deepcopy(payload)
+        p, t = self.provider(
+            [
+                response(
+                    {
+                        "decisions": [
+                            {
+                                "before_id": "R1",
+                                "after_ids": ["R2", "R999"],
+                                "explanation": "R1 is prose",
+                            }
+                        ]
+                    }
+                )
+            ]
+        )
+        result = await p.structured("match_functions", "test", payload, schema)
+        decision = result["decisions"][0]
+        self.assertEqual(decision["before_id"], payload["before"][0]["id"])
+        self.assertEqual(decision["after_ids"], [payload["after"][0]["id"], "R999"])
+        self.assertEqual(decision["explanation"], "R1 is prose")
+        self.assertEqual(payload, original)
+        wire = json.loads(t.calls[0][1]["input"][0]["content"][0]["text"])
+        self.assertEqual(wire["before"][0], {"id": "R1", "action": "R1"})
+
     async def test_wire_source_aliases_restore_only_reference_fields(self):
         case = cases()[0]
         document = case.payload["documents"][0]
@@ -112,6 +151,16 @@ class ProviderTests(unittest.IsolatedAsyncioTestCase):
         self.assertFalse(body["store"])
         self.assertTrue(body["text"]["format"]["strict"])
         self.assertEqual(p.usage()[0]["input_tokens"], 12)
+
+    async def test_sampling_is_supported_by_configured_model_family(self):
+        for model in ("gpt-4.1", "gpt-4o-mini", "reasoning-model"):
+            p, t = self.provider([response()], model=model)
+            await self.ask(p)
+            body = t.calls[0][1]
+            if model.startswith(("gpt-4.1", "gpt-4o")):
+                self.assertEqual(body["temperature"], 0)
+            else:
+                self.assertNotIn("temperature", body)
 
     async def test_retry_and_nonretryable_authorization(self):
         p, t = self.provider([HTTPFailure(429), HTTPFailure(503), response()])

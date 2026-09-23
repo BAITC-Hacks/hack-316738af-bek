@@ -176,6 +176,18 @@ async def extract(registry, provider, settings, emit):
                             "AI объектінің ID немесе редакциясы жарамсыз.",
                         )
                     local.add(item["id"])
+                    if "name" in item and not item["name"].strip():
+                        raise AnalysisError(
+                            "EXTRACTION_ENTITY_INVALID",
+                            "AI бөлімше атауын бос қайтарды.",
+                        )
+                    if "action" in item and (
+                        not item["action"].strip() or not item["object"].strip()
+                    ):
+                        raise AnalysisError(
+                            "EXTRACTION_FUNCTION_INVALID",
+                            "AI функциясының әрекеті немесе объектісі анықталмаған.",
+                        )
                     registry.ids(item["source_span_ids"], doc["version"], nonempty=True)
                     if not set(item["source_span_ids"]).issubset(allowed_ids):
                         raise AnalysisError(

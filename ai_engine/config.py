@@ -33,6 +33,7 @@ class Settings:
     max_functions: int = 1500
     concurrency: int = 3
     retries: int = 2
+    max_risk_pairs: int = 200
 
     @classmethod
     def from_env(cls):
@@ -54,6 +55,7 @@ class Settings:
             max_requests=_integer("AI_MAX_REQUESTS", 100, 1, 500),
             max_output_tokens=_integer("AI_MAX_OUTPUT_TOKENS", 12000, 500, 32000),
             concurrency=_integer("AI_CONCURRENCY", 3, 1, 8),
+            max_risk_pairs=_integer("AI_MAX_RISK_PAIRS", 200, 1, 5000),
         )
 
     def require_live(self):

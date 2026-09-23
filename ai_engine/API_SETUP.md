@@ -57,6 +57,7 @@ AI_REQUEST_TIMEOUT_SECONDS=90
 AI_MAX_REQUESTS=100
 AI_MAX_OUTPUT_TOKENS=12000
 AI_CONCURRENCY=3
+AI_MAX_RISK_PAIRS=200
 ```
 
 `YOUR_...` — толтыру орны; оны нақты кілтпен ауыстырыңыз. NVIDIA кілті әлі жоқ болса, `NVIDIA_ENABLED=false`, `NVIDIA_API_KEY=` күйінде қалдырыңыз: негізгі талдау OpenAI арқылы жұмыс істейді. `gpt-4.1` осы жобаның бастапқы конфигурациясы; нақты сапасы live бағалаумен тексеріледі.
