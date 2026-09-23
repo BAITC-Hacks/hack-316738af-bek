@@ -9,7 +9,7 @@
 - Source registry, extraction + semantic audit, unit matching, exhaustive after partitions, raw-text loss countercheck, risks + counterevidence, validated result, usage/progress.
 - OpenAI/NVIDIA HTTP клиенттері; default runtime-да тест нәтижесіне ауысу жоқ.
 - CLI, pinned dependencies, 15 бақылау кірісі, бөлек labels, live evaluator.
-- 32 автоматты тест өтті; `evaluation/engineering_checks.json` — нақты орындалу есебі.
+- 32 автоматты тест өтті. `python -m evaluation.check` қайталанатын тесттерді орындап, Git-ке кірмейтін `evaluation/local_reports/engineering_checks.json` есебін жасайды.
 - Ruff статикалық және формат тексерістері өтті; pip check үйлеспейтін тәуелділік таппады. PR-ға екі операциялық жүйеге арналған CI workflow қосылды.
 - №8/№9 жергілікті 981 paragraph кіріс схемасына тексерілді; түпнұсқалар Git-ке кірмейді.
 - `ba5c79d` commit-інің `core.autocrlf=false` таза жергілікті Git көшірмесінде 32 тест, Ruff check/format және келісім мысалының validation тексеруі қайта өтті. Бұл Windows-та LF checkout арқылы жасалған тексеру; Ubuntu орындалуы деп көрсетілмейді.
@@ -21,7 +21,7 @@
 ## Backend иесіне
 
 1. `python -m pip install -r ai_engine/requirements.txt` орнатыңыз, Python 3.11+ қолданыңыз.
-2. Сервер процесіне `OPENAI_API_KEY`, `OPENAI_MODEL` беріңіз. Қалған env `ai_engine/.env.example` ішінде. Docker image-ге `contracts/openapi.json` да көшірілуі тиіс.
+2. Сервер процесіне `OPENAI_API_KEY`, `OPENAI_MODEL` беріңіз. Қалған env `ai_engine/.env.example` ішінде; толық қадамдар `ai_engine/API_SETUP.md` нұсқаулығында. Docker image-ге `contracts/openapi.json` да көшірілуі тиіс.
 3. `AnalysisInput` схемасын дәл беріңіз: `span_count`, `parse_status`, бастапқы `raw_text`, context сілтемелері.
 4. `await analyze(payload, emit_progress=async_callback)` шақырыңыз. Callback storage I/O қатесі талдауды бұзбай, диагностикаланады.
 5. `AnalysisError.code/message/retryable` мәндерін келісімдегі error response-қа айналдырыңыз. Қате мәтініне кілт/толық құжат қоспаңыз.
@@ -39,7 +39,7 @@
 ## Орындалған тексеру
 
 ```text
-python -m evaluation.check --report evaluation/engineering_checks.json
+python -m evaluation.check
 32 tests; 0 failures; 0 errors; 0 live API calls.
 python -m evaluation.run --all --export-dir evaluation/fixtures
 15 synthetic inputs exported; expected labels separate.
@@ -51,7 +51,7 @@ python -m evaluation.run --all --export-dir evaluation/fixtures
 
 ## Қосу тәртібі
 
-`main`-ға тікелей push автоматты рұқсат тексеруімен қабылданбады; ортақ келісім мен AI коды `team/ai-engine` тармағы және draft PR арқылы беріледі. Жаңа жұмыс көшірмесінде:
+Ортақ келісім мен AI коды [PR №1](https://github.com/BAITC-Hacks/hack-316738af-bek/pull/1) арқылы беріледі. Оның GitHub-тағы мәртебесі біріктірудің нақты нәтижесін көрсетеді. Жаңа жұмыс көшірмесінде:
 
 ```text
 git fetch origin

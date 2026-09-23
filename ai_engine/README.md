@@ -47,12 +47,16 @@ Python **3.11+** қажет; жергілікті тексерілген нұс�
 
 ## 4. Орнату
 
+Кілтті алу, `.env` толтыру және backend-ке қосу: [API баптау нұсқаулығы](API_SETUP.md).
+
 Барлық команданы **репозиторий түбірінде** орындаңыз.
 
 ```powershell
 python -m venv .venv
 .\.venv\Scripts\python.exe -m pip install -r ai_engine/requirements.txt
-Copy-Item ai_engine/.env.example ai_engine/.env
+if (-not (Test-Path -LiteralPath ai_engine/.env)) {
+    Copy-Item -LiteralPath ai_engine/.env.example -Destination ai_engine/.env
+}
 ```
 
 Linux/macOS-та interpreter жолы: `.venv/bin/python`.
