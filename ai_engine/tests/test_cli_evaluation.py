@@ -31,13 +31,14 @@ class CliTests(unittest.TestCase):
         with tempfile.TemporaryDirectory() as d:
             path = Path(d) / "keys.env"
             path.write_text(
-                'OPENAI_API_KEY="$(not-a-command)"\nOPENAI_MODEL=file-model\nUNRELATED=value\n',
+                'OPENAI_API_KEY="$(not-a-command)"\nOPENAI_MODEL=file-model\nAI_MAX_RISK_PAIRS=25\nUNRELATED=value\n',
                 encoding="utf-8",
             )
             with patch.dict(os.environ, {"OPENAI_MODEL": "existing-model"}, clear=True):
                 load_env(path)
                 self.assertEqual(os.environ["OPENAI_API_KEY"], "$(not-a-command)")
                 self.assertEqual(os.environ["OPENAI_MODEL"], "existing-model")
+                self.assertEqual(Settings.from_env().max_risk_pairs, 25)
                 self.assertNotIn("UNRELATED", os.environ)
 
     def test_invalid_input_file_is_sanitized(self):

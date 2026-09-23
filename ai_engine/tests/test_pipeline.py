@@ -78,6 +78,45 @@ class PipelineTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["coverage"]["unknown"], 1)
         self.assertFalse(any(f["type"] == "potential_loss" for f in result["findings"]))
 
+    async def test_risk_budget_reports_incomplete_search(self):
+        departments = [unit("Бөлім " + key, key) for key in ("a", "b", "c")]
+        duties = [duty(key, key, "сақтау", "ортақ мұрағат") for key in ("a", "b", "c")]
+        case = make_case(
+            "bounded-risks",
+            departments,
+            duties,
+            departments,
+            duties,
+            {key: [key] for key in ("a", "b", "c")},
+        )
+        provider = FixtureProvider(case)
+        result = await self.run_case(
+            case, provider, replace(Settings("test", "test"), max_risk_pairs=1)
+        )
+        self.assertEqual(result["status"], "partial")
+        self.assertIn("RISK_SEARCH_LIMIT", {w["code"] for w in result["warnings"]})
+        searches = [p for op, p in provider.calls if op == "detect_risks"]
+        self.assertEqual(searches[0]["version"], "after")
+        self.assertEqual([len(p["pairs"]) for p in searches], [1, 1])
+        self.assertFalse(
+            any(f["risk_change"] == "no_longer_detected" for f in result["findings"])
+        )
+
+    def test_finding_with_unknown_and_known_actor_keeps_valid_ids(self):
+        from ai_engine.risks import finding
+
+        result = finding(
+            "potential_duplicate",
+            "Тексеру",
+            "Дәлел",
+            ["source"],
+            [],
+            [None, "unit-a", "unit-a"],
+            1,
+        )
+        self.assertEqual(result["affected_units"], ["unit-a"])
+        self.assertTrue(result["id"])
+
     async def test_role_in_department_slot_preserves_evidenced_actor(self):
         position = unit("Аудитор", "r", kind="role")
         task = duty("check", "r", "тексеру", "есеп")
@@ -140,6 +179,67 @@ class PipelineTests(unittest.IsolatedAsyncioTestCase):
         self.assertEqual(result["coverage"]["full"], 1)
         self.assertEqual(sum(op == "extract_functions" for op, _ in provider.calls), 3)
         self.assertEqual(sum(op == "audit_extraction" for op, _ in provider.calls), 2)
+
+    async def test_department_can_report_to_a_role(self):
+        before = [unit("Директор", "r", kind="role"), unit("Есеп бөлімі", "a", "r")]
+        after = [
+            unit("Басқарма төрағасы", "s", kind="role"),
+            unit("Есеп бөлімі", "a", "s"),
+        ]
+        task = duty("report", "a", "дайындау", "есеп")
+        case = make_case(
+            "role-parent", before, [task], after, [task], {"report": ["report"]}
+        )
+        result = await self.run_case(case)
+        self.assertEqual(result["status"], "completed")
+        self.assertTrue(
+            any(c["change_type"] == "reporting_changed" for c in result["unit_changes"])
+        )
+
+    async def test_empty_function_is_quarantined_before_final_result(self):
+        case = cases()[0]
+
+        class Empty(FixtureProvider):
+            def respond(self, operation, payload):
+                data = super().respond(operation, payload)
+                if operation == "extract_functions" and payload["version"] == "after":
+                    data["functions"][0]["object"] = " "
+                return data
+
+        result = await self.run_case(case, Empty(case))
+        self.assertEqual(result["status"], "partial")
+        self.assertIn(
+            "EXTRACTION_FUNCTION_INVALID", {w["code"] for w in result["warnings"]}
+        )
+        self.assertEqual(result["coverage"]["unknown"], 1)
+
+    async def test_missed_identical_duty_is_independently_challenged(self):
+        case = next(c for c in cases() if c.name == "duplicate")
+
+        class Missed(FixtureProvider):
+            def respond(self, operation, payload):
+                data = super().respond(operation, payload)
+                if operation == "detect_risks":
+                    for decision in data["decisions"]:
+                        decision["type"] = "none"
+                        decision["explanation"] = (
+                            "Different departments (incorrect dismissal)."
+                        )
+                return data
+
+        provider = Missed(case)
+        result = await self.run_case(case, provider)
+        self.assertEqual(result["status"], "completed")
+        self.assertEqual(measurements(result)["duplicate"], 1)
+        self.assertTrue(any(op == "verify_risks" for op, _ in provider.calls))
+        for op, request in provider.calls:
+            if op in ("detect_risks", "verify_risks"):
+                sources = request["sources"]
+                ids = {s["id"] for s in sources}
+                self.assertEqual(len(sources), len(ids))
+                for pair in request["pairs"]:
+                    for side in ("left", "right"):
+                        self.assertTrue(set(pair[side]["source_span_ids"]) <= ids)
 
     async def test_semantic_audit_rejects_unsupported_object(self):
         case = cases()[0]

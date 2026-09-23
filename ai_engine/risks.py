@@ -1,11 +1,12 @@
 """Cross-unit duplication, incompatible duties, counterevidence and risk changes."""
 
+import asyncio
 from itertools import combinations, product
 import re
 
 from . import prompts
 from .errors import AnalysisError
-from .matching import comparable, function_record
+from .matching import comparable
 from .schema import object_schema, array
 from .sources import diagnostic, normalize, pack_chunks, stable_id, unique
 
@@ -101,16 +102,42 @@ def constraint_sources(registry, version):
 async def evaluate_pairs(pairs, units, registry, provider, settings, version, emit):
     warnings, observed, complete = [], {}, True
     constraints = constraint_sources(registry, version)
+    actors = {u["id"]: u for u in units if u["version"] == version}
+
+    def lineage(function):
+        actor = function["role_id"] or function["unit_id"]
+        chain = []
+        while actor in actors and actor not in chain:
+            chain.append(actor)
+            actor = actors[actor]["parent_id"]
+        return chain
 
     def record(pair):
+        left, right = lineage(pair["left"]), lineage(pair["right"])
+        relationship = "not_established"
+        if left and right:
+            if left[0] == right[0]:
+                relationship = "same_actor"
+            elif left[0] in right[1:] or right[0] in left[1:]:
+                relationship = "ancestor_descendant"
         return {
             "id": pair["id"],
-            "left": function_record(pair["left"], registry),
-            "right": function_record(pair["right"], registry),
+            "left": pair["left"],
+            "right": pair["right"],
+            "actor_relationship": relationship,
         }
 
-    parts = list(pack_chunks(pairs, settings.comparison_chars, record))
-    for n, part in enumerate(parts):
+    # Source paragraphs are shared across many pairs. Send each once per request
+    # instead of repeating the entire ancestor chain inside every function.
+    parts = [
+        part[i : i + 24]
+        for part in pack_chunks(pairs, settings.comparison_chars, record)
+        for i in range(0, len(part), 24)
+    ]
+    finished = 0
+
+    async def inspect_part(part):
+        nonlocal finished
         pair_map = {p["id"]: p for p in part}
         source_ids = unique(
             constraints
@@ -120,32 +147,52 @@ async def evaluate_pairs(pairs, units, registry, provider, settings, version, em
                 for f in (p["left"], p["right"])
                 for s in f["source_span_ids"] + f["context_span_ids"]
             ]
+            + [
+                sid
+                for p in part
+                for f in (p["left"], p["right"])
+                for uid in lineage(f)
+                for sid in actors[uid]["source_span_ids"]
+            ]
         )
         request = {
             "version": version,
             "pairs": [record(p) for p in part],
-            "units": units,
+            "units": [u for u in units if u["version"] == version],
+            "sources": registry.evidence(source_ids),
             "constraints": registry.evidence(constraints),
         }
         allowed = {s["id"] for s in registry.evidence(source_ids)}
+        batch_warnings = []
+        decisions = []
+        ok = True
         try:
             response = await provider.structured(
                 "detect_risks", prompts.RISKS, request, PAIR_SCHEMA
             )
             decisions = response["decisions"]
             validate_pair_decisions(decisions, pair_map, registry, allowed, version)
-            positives = [d for d in decisions if d["type"] in ("duplicate", "conflict")]
-            if positives:
-                selected = {d["pair_id"] for d in positives}
+            challenged = [
+                d
+                for d in decisions
+                if d["type"] in ("duplicate", "conflict")
+                or all(
+                    normalize(pair_map[d["pair_id"]]["left"][field] or "")
+                    == normalize(pair_map[d["pair_id"]]["right"][field] or "")
+                    for field in ("action", "object")
+                )
+            ]
+            if challenged:
+                selected = {d["pair_id"] for d in challenged}
                 audit_request = {
                     **request,
                     "pairs": [record(p) for p in part if p["id"] in selected],
-                    "proposed": positives,
+                    "proposed": challenged,
                 }
                 audit = await provider.structured(
                     "verify_risks",
                     prompts.RISKS
-                    + "\nIndependently challenge each proposed risk. Find safeguards, different scopes, or reporting hierarchy that refute it. Correct false positives to none/uncertain.",
+                    + "\nIndependently verify each proposed decision, including negative decisions. Find actual safeguards, different scopes or reporting hierarchy that refute a risk. Also correct a missed overlap when the same duty is assigned to distinct actors without a documented distinction. Do not invent safeguards or assume department names mean different objects. Return the evidence-supported decision, which may differ from proposed.",
                     audit_request,
                     PAIR_SCHEMA,
                 )
@@ -155,29 +202,42 @@ async def evaluate_pairs(pairs, units, registry, provider, settings, version, em
                 )
                 corrected = {d["pair_id"]: d for d in audit["decisions"]}
                 decisions = [corrected.get(d["pair_id"], d) for d in decisions]
-            observed.update(
-                {
-                    d["pair_id"]: {
-                        **d,
-                        "functions": [
-                            pair_map[d["pair_id"]]["left"]["id"],
-                            pair_map[d["pair_id"]]["right"]["id"],
-                        ],
-                    }
-                    for d in decisions
-                }
-            )
         except AnalysisError as exc:
             if exc.code in ("PROVIDER_AUTH", "PROVIDER_REQUEST_REJECTED"):
                 raise
-            complete = False
-            warnings.append(diagnostic(exc.code, exc.message))
+            ok = False
+            decisions = []
+            batch_warnings.append(diagnostic(exc.code, exc.message))
+        finished += 1
         await emit(
             "verifying",
-            n + 1,
+            finished,
             len(parts),
             f"{version}: ықтимал қайталану мен қақтығыстың дәлелдері тексерілуде.",
         )
+        return (
+            {
+                d["pair_id"]: {
+                    **d,
+                    "functions": [
+                        pair_map[d["pair_id"]]["left"]["id"],
+                        pair_map[d["pair_id"]]["right"]["id"],
+                    ],
+                }
+                for d in decisions
+            },
+            ok,
+            batch_warnings,
+        )
+
+    for i in range(0, len(parts), settings.concurrency):
+        batches = await asyncio.gather(
+            *(inspect_part(part) for part in parts[i : i + settings.concurrency])
+        )
+        for decisions, ok, ws in batches:
+            observed.update(decisions)
+            complete = complete and ok
+            warnings.extend(ws)
     return observed, complete, warnings
 
 
@@ -226,6 +286,7 @@ def finding(
     search_complete=False,
     verified=True,
 ):
+    affected = unique([actor for actor in affected if actor])
     action = {
         "potential_loss": "Міндеттің кейінгі жауаптысын тексеріп, жетіспейтін бекітуді нақтылау.",
         "ownership_gap": "Осы функцияның жауапты бөлімшесін және өкілеттігін құжатта нақтылау.",
@@ -246,7 +307,7 @@ def finding(
         "evidence_ids": unique(evidence),
         "context_evidence_ids": unique(contexts),
         "counterevidence_ids": unique(counter),
-        "affected_units": unique([u for u in affected if u]),
+        "affected_units": affected,
         "recommended_action": {
             "action": action,
             "target_role_id": None,
@@ -276,10 +337,42 @@ async def detect_risks(
     by_id = {f["id"]: f for f in functions}
     old_fs = [f for f in functions if f["version"] == "before"]
     new_fs = [f for f in functions if f["version"] == "after"]
-    old_pairs = candidate_pairs(old_fs, vectors)
-    old, old_ok, warnings = await evaluate_pairs(
+    warnings = []
+
+    def bounded(pairs, version):
+        if len(pairs) <= settings.max_risk_pairs:
+            return pairs, True
+        total = len(pairs)
+        ranked = sorted(
+            pairs,
+            key=lambda p: (
+                -similarity(p["left"]["object"], p["right"]["object"]),
+                -similarity(p["left"]["action"], p["right"]["action"]),
+                p["id"],
+            ),
+        )
+        warnings.append(
+            diagnostic(
+                "RISK_SEARCH_LIMIT",
+                f"{version}: {total} кандидат жұптың ең ұқсас {settings.max_risk_pairs} жұбы тексеруге таңдалды. Қалғандары тексерілмеді; тәуекелді іздеу толық емес.",
+            )
+        )
+        return ranked[: settings.max_risk_pairs], False
+
+    # Spend the bounded model budget on the changed organization first. Historic
+    # risk classification is useful, but must not starve the current risk search.
+    new_pairs, new_scope_ok = bounded(candidate_pairs(new_fs, vectors), "after")
+    new, new_ok, ws = await evaluate_pairs(
+        new_pairs, units, registry, provider, settings, "after", emit
+    )
+    warnings.extend(ws)
+    new_ok = new_ok and new_scope_ok
+    old_pairs, old_scope_ok = bounded(candidate_pairs(old_fs, vectors), "before")
+    old, old_ok, ws = await evaluate_pairs(
         old_pairs, units, registry, provider, settings, "before", emit
     )
+    warnings.extend(ws)
+    old_ok = old_ok and old_scope_ok
     links = {b: m for m in mappings for b in m["before_function_ids"]}
     forced = []
     for d in old.values():
@@ -291,11 +384,23 @@ async def detect_risks(
                     links.get(right, {}).get("after_function_ids", []),
                 )
             )
-    new_pairs = candidate_pairs(new_fs, vectors, forced)
-    new, new_ok, ws = await evaluate_pairs(
-        new_pairs, units, registry, provider, settings, "after", emit
-    )
-    warnings.extend(ws)
+    seen = {p["id"] for p in new_pairs}
+    forced_set = {tuple(sorted(p)) for p in forced}
+    extra = [
+        p
+        for p in candidate_pairs(new_fs, vectors, forced)
+        if p["id"] not in seen
+        and tuple(sorted((p["left"]["id"], p["right"]["id"]))) in forced_set
+    ]
+    if extra:
+        extra, extra_scope_ok = bounded(extra, "after follow-up")
+        followups, followups_ok, ws = await evaluate_pairs(
+            extra, units, registry, provider, settings, "after", emit
+        )
+        new.update(followups)
+        new_pairs.extend(extra)
+        new_ok = new_ok and followups_ok and extra_scope_ok
+        warnings.extend(ws)
     findings, persisted_old = [], set()
     revision = registry.payload["analysis_revision"]
 

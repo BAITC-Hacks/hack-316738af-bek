@@ -39,6 +39,35 @@ def expand_sources(value, reverse):
     return value
 
 
+def map_reference_fields(value, transform):
+    """Map typed identifier fields while leaving document prose untouched."""
+    if isinstance(value, list):
+        return [map_reference_fields(item, transform) for item in value]
+    if not isinstance(value, dict):
+        return value
+    result = {}
+    for key, item in value.items():
+        if (key == "id" or key.endswith("_id")) and isinstance(item, str):
+            result[key] = transform(item)
+        elif key.endswith("_ids") and isinstance(item, list):
+            result[key] = [transform(s) if isinstance(s, str) else s for s in item]
+        else:
+            result[key] = map_reference_fields(item, transform)
+    return result
+
+
+def compact_references(payload):
+    forward = {}
+
+    def label(original):
+        if original not in forward:
+            forward[original] = f"R{len(forward) + 1}"
+        return forward[original]
+
+    wire = map_reference_fields(payload, label)
+    return wire, {alias: original for original, alias in forward.items()}
+
+
 class HTTPFailure(Exception):
     def __init__(self, status, retry_after=0):
         self.status = status
@@ -199,7 +228,7 @@ class Provider:
         wire_payload, source_aliases = (
             compact_sources(payload)
             if operation == "extract_functions"
-            else (payload, {})
+            else compact_references(payload)
         )
         body = {
             "model": self.settings.model,
@@ -228,6 +257,10 @@ class Provider:
             "max_output_tokens": self.settings.max_output_tokens,
             "store": False,
         }
+        # Evidence analysis benefits from low sampling variance. Restrict this
+        # setting to model families that support it; reasoning models may not.
+        if self.settings.model.startswith(("gpt-4.1", "gpt-4o")):
+            body["temperature"] = 0
         for attempt in range(2):
             response = await self._post(
                 "openai", self.settings.model, OPENAI_URL, self.settings.api_key, body
@@ -295,7 +328,13 @@ class Provider:
                 )
                 continue
             if source_aliases:
-                value = expand_sources(value, source_aliases)
+                value = (
+                    expand_sources(value, source_aliases)
+                    if operation == "extract_functions"
+                    else map_reference_fields(
+                        value, lambda sid: source_aliases.get(sid, sid)
+                    )
+                )
             self.cache[cache_key] = copy.deepcopy(value)
             return value
         raise AssertionError("unreachable")
