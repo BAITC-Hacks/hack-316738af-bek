@@ -1,0 +1,187 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "control-hierarchy",
+  "analysis_revision": 1,
+  "documents": [
+    {
+      "id": "before-document",
+      "version": "before",
+      "filename": "hierarchy-before.docx",
+      "title": "Жасанды бақылау: hierarchy",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "d7a75358867b80f8e9f342bc315b1bf130be99e5a0a433197f6d1f07f182a849",
+      "parse_status": "complete",
+      "span_count": 4,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "before:unit:p",
+          "document_id": "before-document",
+          "raw_text": "Бөлімше: Аудит блогы",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:unit:c",
+          "document_id": "before-document",
+          "raw_text": "Бөлімше: Аудит департаменті; бағынышты: Аудит блогы",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:fn:parent",
+          "document_id": "before-document",
+          "raw_text": "Аудит блогы: Тәуекелдер аудитін ұйымдастырады.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "before:unit:p"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "3",
+            "path": "paragraph:3",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:fn:child",
+          "document_id": "before-document",
+          "raw_text": "Аудит департаменті: Блок міндетін орындау аясында тәуекелдер аудитін жүргізеді.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "before:unit:c"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "4",
+            "path": "paragraph:4",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    },
+    {
+      "id": "after-document",
+      "version": "after",
+      "filename": "hierarchy-after.docx",
+      "title": "Жасанды бақылау: hierarchy",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "d7a75358867b80f8e9f342bc315b1bf130be99e5a0a433197f6d1f07f182a849",
+      "parse_status": "complete",
+      "span_count": 4,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "after:unit:p",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Аудит блогы",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:unit:c",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Аудит департаменті; бағынышты: Аудит блогы",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:parent",
+          "document_id": "after-document",
+          "raw_text": "Аудит блогы: Тәуекелдер аудитін ұйымдастырады.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:p"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "3",
+            "path": "paragraph:3",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:child",
+          "document_id": "after-document",
+          "raw_text": "Аудит департаменті: Блок міндетін орындау аясында тәуекелдер аудитін жүргізеді.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:c"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "4",
+            "path": "paragraph:4",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    }
+  ]
+}

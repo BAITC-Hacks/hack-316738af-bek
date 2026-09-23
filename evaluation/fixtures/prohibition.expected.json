@@ -1,0 +1,15 @@
+{
+  "name": "prohibition",
+  "links": {
+    "before:fn:archive": [
+      "after:fn:archive"
+    ]
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [],
+  "expectations": {
+    "before_total": 1,
+    "loss": 0
+  }
+}

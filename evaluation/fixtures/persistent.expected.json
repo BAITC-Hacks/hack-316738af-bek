@@ -1,0 +1,33 @@
+{
+  "name": "persistent",
+  "links": {
+    "before:fn:archive": [
+      "after:fn:archive"
+    ],
+    "before:fn:copy": [
+      "after:fn:copy"
+    ]
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [
+    {
+      "source_ids": [
+        "before:fn:archive",
+        "before:fn:copy"
+      ],
+      "kind": "duplicate"
+    },
+    {
+      "source_ids": [
+        "after:fn:archive",
+        "after:fn:copy"
+      ],
+      "kind": "duplicate"
+    }
+  ],
+  "expectations": {
+    "duplicate": 1,
+    "persisting": 1
+  }
+}

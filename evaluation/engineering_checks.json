@@ -1,0 +1,23 @@
+{
+  "mode": "offline_engineering_tests",
+  "generated_at": "2026-09-23T10:04:45.028348+00:00",
+  "python": "3.12.14",
+  "contract_sha256": "b8b529d5e9840dcdcda42d91df6359e4584ddea84cdedea17020d7a55dfc8fe9",
+  "tests_run": 32,
+  "failures": 0,
+  "errors": 0,
+  "skipped": 0,
+  "seconds": 0.375,
+  "passed": true,
+  "live_api_calls": 0,
+  "live_model_accuracy_measured": false,
+  "scope": [
+    "15 scripted domain controls exercise real extraction/matching/risk orchestration and evidence validation.",
+    "Malformed sources, fabricated quotes, semantic audit rejection, cancellation and progress errors.",
+    "Provider envelope validation, retry, request limits, cache, refusal and embeddings."
+  ],
+  "limitations": [
+    "Scripted model replies test code paths; they do not measure real model understanding.",
+    "No UI, backend parsing, storage or export integration is exercised."
+  ]
+}

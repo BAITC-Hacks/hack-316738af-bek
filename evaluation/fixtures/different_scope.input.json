@@ -1,0 +1,149 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "control-different_scope",
+  "analysis_revision": 1,
+  "documents": [
+    {
+      "id": "before-document",
+      "version": "before",
+      "filename": "different_scope-before.docx",
+      "title": "Жасанды бақылау: different_scope",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "a12905c484d6ae73f3924360bce89940ab953d2b23f62815bf76e2acc5f5c626",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "before:unit:a",
+          "document_id": "before-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:fn:it",
+          "document_id": "before-document",
+          "raw_text": "Есеп бөлімі: Ақпараттық жүйелер аудитін жүргізеді. Қолданылу аясы: IT",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "before:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    },
+    {
+      "id": "after-document",
+      "version": "after",
+      "filename": "different_scope-after.docx",
+      "title": "Жасанды бақылау: different_scope",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "e5154a8913b2aa8ee0b8ea71f0f114ce74fb9be21c111de1406b16864eb191dd",
+      "parse_status": "complete",
+      "span_count": 4,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "after:unit:a",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:unit:b",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Бақылау бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:it",
+          "document_id": "after-document",
+          "raw_text": "Есеп бөлімі: Ақпараттық жүйелер аудитін жүргізеді. Қолданылу аясы: IT",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "3",
+            "path": "paragraph:3",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:hr",
+          "document_id": "after-document",
+          "raw_text": "Бақылау бөлімі: Персонал процестерінің аудитін жүргізеді. Қолданылу аясы: HR",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:b"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "4",
+            "path": "paragraph:4",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    }
+  ]
+}

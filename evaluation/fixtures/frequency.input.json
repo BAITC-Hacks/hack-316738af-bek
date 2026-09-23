@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "control-frequency",
+  "analysis_revision": 1,
+  "documents": [
+    {
+      "id": "before-document",
+      "version": "before",
+      "filename": "frequency-before.docx",
+      "title": "Жасанды бақылау: frequency",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "4c120d4c7652638c22fa10f49809ee33e08f37115cdcaec6927b174e8e10d706",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "before:unit:a",
+          "document_id": "before-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:fn:report",
+          "document_id": "before-document",
+          "raw_text": "Есеп бөлімі: Қызмет есебін дайындауға міндетті. Жиілігі: ай сайын",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "before:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    },
+    {
+      "id": "after-document",
+      "version": "after",
+      "filename": "frequency-after.docx",
+      "title": "Жасанды бақылау: frequency",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "b6578065adcf434c388c4f41be55d4d7d428237bce168441c4502e9ab6e59742",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "after:unit:a",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:yearly",
+          "document_id": "after-document",
+          "raw_text": "Есеп бөлімі: Қызмет есебін дайындауға міндетті. Жиілігі: жыл сайын",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    }
+  ]
+}

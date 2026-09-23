@@ -1,0 +1,17 @@
+{
+  "name": "loss",
+  "links": {
+    "before:fn:archive": [
+      "after:fn:archive"
+    ],
+    "before:fn:report": []
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [],
+  "expectations": {
+    "none": 1,
+    "full": 1,
+    "loss": 1
+  }
+}

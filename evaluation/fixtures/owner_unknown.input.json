@@ -1,0 +1,129 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "control-owner_unknown",
+  "analysis_revision": 1,
+  "documents": [
+    {
+      "id": "before-document",
+      "version": "before",
+      "filename": "owner_unknown-before.docx",
+      "title": "Жасанды бақылау: owner_unknown",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "b36daa5f8f3779e277f4da4f0836a67f0c58c2c4bdf1327a26410ba11290031c",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "before:unit:a",
+          "document_id": "before-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:fn:archive",
+          "document_id": "before-document",
+          "raw_text": "Есеп бөлімі: Келісімшарттарды мұрағаттауға міндетті.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "before:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    },
+    {
+      "id": "after-document",
+      "version": "after",
+      "filename": "owner_unknown-after.docx",
+      "title": "Жасанды бақылау: owner_unknown",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "6cd7b1e0912a24c1b0af53674c8985953d57965fadeb7541e3f42a880c79066e",
+      "parse_status": "complete",
+      "span_count": 3,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "after:unit:a",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:archive",
+          "document_id": "after-document",
+          "raw_text": "Есеп бөлімі: Келісімшарттарды мұрағаттауға міндетті.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:unknown",
+          "document_id": "after-document",
+          "raw_text": "Жауапты белгісіз: Есеп дайындалуы тиіс.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "3",
+            "path": "paragraph:3",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    }
+  ]
+}

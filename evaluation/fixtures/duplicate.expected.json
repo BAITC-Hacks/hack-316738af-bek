@@ -1,0 +1,24 @@
+{
+  "name": "duplicate",
+  "links": {
+    "before:fn:archive": [
+      "after:fn:archive"
+    ]
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [
+    {
+      "source_ids": [
+        "after:fn:archive",
+        "after:fn:copy"
+      ],
+      "kind": "duplicate"
+    }
+  ],
+  "expectations": {
+    "duplicate": 1,
+    "loss": 0,
+    "new_risk": 1
+  }
+}

@@ -1,0 +1,17 @@
+{
+  "name": "hierarchy",
+  "links": {
+    "before:fn:parent": [
+      "after:fn:parent"
+    ],
+    "before:fn:child": [
+      "after:fn:child"
+    ]
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [],
+  "expectations": {
+    "duplicate": 0
+  }
+}

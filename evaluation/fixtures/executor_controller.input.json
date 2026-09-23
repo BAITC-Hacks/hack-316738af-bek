@@ -1,0 +1,167 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "control-executor_controller",
+  "analysis_revision": 1,
+  "documents": [
+    {
+      "id": "before-document",
+      "version": "before",
+      "filename": "executor_controller-before.docx",
+      "title": "Жасанды бақылау: executor_controller",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "43d46e4fdbad0c2bf0a51aa2b13b6d32860d14adf8b57f6efd197e91b3a7406e",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "before:unit:a",
+          "document_id": "before-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:fn:execute",
+          "document_id": "before-document",
+          "raw_text": "Есеп бөлімі: Төлемдерді орындауға міндетті.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "before:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    },
+    {
+      "id": "after-document",
+      "version": "after",
+      "filename": "executor_controller-after.docx",
+      "title": "Жасанды бақылау: executor_controller",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "52e55a9b16a8c6ea006d5128f78b3f102e110ac0e56569066f2d1d5082a68d8a",
+      "parse_status": "complete",
+      "span_count": 5,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "after:unit:a",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:unit:b",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Бақылау бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:execute",
+          "document_id": "after-document",
+          "raw_text": "Есеп бөлімі: Төлемдерді орындауға міндетті.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "3",
+            "path": "paragraph:3",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:audit",
+          "document_id": "after-document",
+          "raw_text": "Бақылау бөлімі: Басқа бөлімше орындайтын төлемдерді тәуелсіз тексереді.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:b"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "4",
+            "path": "paragraph:4",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:rule:0",
+          "document_id": "after-document",
+          "raw_text": "Тәуелсіз бақылау талабы: қызметкер өзі орындайтын төлемдерді өзі тәуелсіз тексере алмайды. Мүдделер қақтығысына жол берілмейді.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "9",
+            "path": "paragraph:5",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    }
+  ]
+}

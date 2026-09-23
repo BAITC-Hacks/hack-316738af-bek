@@ -1,0 +1,21 @@
+{
+  "name": "transfer",
+  "links": {
+    "before:fn:archive": [
+      "after:fn:moved"
+    ]
+  },
+  "flags": {
+    "before:fn:archive": [
+      "transferred"
+    ]
+  },
+  "coverages": {},
+  "risks": [],
+  "expectations": {
+    "none": 0,
+    "full": 1,
+    "loss": 0,
+    "transferred": 1
+  }
+}

@@ -1,0 +1,151 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "control-prohibition",
+  "analysis_revision": 1,
+  "documents": [
+    {
+      "id": "before-document",
+      "version": "before",
+      "filename": "prohibition-before.docx",
+      "title": "Жасанды бақылау: prohibition",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "9fd70f7cfd52bacb2bb3b667c95a59b80a0388002e5f856e62f0363de6814a69",
+      "parse_status": "complete",
+      "span_count": 3,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "before:unit:a",
+          "document_id": "before-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:fn:archive",
+          "document_id": "before-document",
+          "raw_text": "Есеп бөлімі: Келісімшарттарды мұрағаттауға міндетті.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "before:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:fn:ban",
+          "document_id": "before-document",
+          "raw_text": "Есеп бөлімі үшін тыйым салынған әрекет: Төлемдерді бекіту",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "before:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "3",
+            "path": "paragraph:3",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    },
+    {
+      "id": "after-document",
+      "version": "after",
+      "filename": "prohibition-after.docx",
+      "title": "Жасанды бақылау: prohibition",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "9fd70f7cfd52bacb2bb3b667c95a59b80a0388002e5f856e62f0363de6814a69",
+      "parse_status": "complete",
+      "span_count": 3,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "after:unit:a",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:archive",
+          "document_id": "after-document",
+          "raw_text": "Есеп бөлімі: Келісімшарттарды мұрағаттауға міндетті.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:ban",
+          "document_id": "after-document",
+          "raw_text": "Есеп бөлімі үшін тыйым салынған әрекет: Төлемдерді бекіту",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "3",
+            "path": "paragraph:3",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    }
+  ]
+}

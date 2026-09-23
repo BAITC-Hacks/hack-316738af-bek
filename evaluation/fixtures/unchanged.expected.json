@@ -1,0 +1,16 @@
+{
+  "name": "unchanged",
+  "links": {
+    "before:fn:archive": [
+      "after:fn:archive"
+    ]
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [],
+  "expectations": {
+    "none": 0,
+    "full": 1,
+    "loss": 0
+  }
+}

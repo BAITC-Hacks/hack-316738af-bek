@@ -1,0 +1,111 @@
+{
+  "schema_version": "1.0.0",
+  "analysis_id": "control-transfer",
+  "analysis_revision": 1,
+  "documents": [
+    {
+      "id": "before-document",
+      "version": "before",
+      "filename": "transfer-before.docx",
+      "title": "Жасанды бақылау: transfer",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "b36daa5f8f3779e277f4da4f0836a67f0c58c2c4bdf1327a26410ba11290031c",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "before:unit:a",
+          "document_id": "before-document",
+          "raw_text": "Бөлімше: Есеп бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "before:fn:archive",
+          "document_id": "before-document",
+          "raw_text": "Есеп бөлімі: Келісімшарттарды мұрағаттауға міндетті.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "before:unit:a"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    },
+    {
+      "id": "after-document",
+      "version": "after",
+      "filename": "transfer-after.docx",
+      "title": "Жасанды бақылау: transfer",
+      "document_type": "regulation",
+      "edition": null,
+      "source_sha256": "758db6a30643fabe649dd2d98021eadd2c3b5020429b2840b0cf4c0c37828e07",
+      "parse_status": "complete",
+      "span_count": 2,
+      "warnings": [],
+      "spans": [
+        {
+          "id": "after:unit:b",
+          "document_id": "after-document",
+          "raw_text": "Бөлімше: Бақылау бөлімі",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [],
+          "locator": {
+            "kind": "docx",
+            "clause": "1",
+            "path": "paragraph:1",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        },
+        {
+          "id": "after:fn:moved",
+          "document_id": "after-document",
+          "raw_text": "Бақылау бөлімі: Келісімшарттарды мұрағаттауға міндетті.",
+          "section_path": [
+            "Ұйымдық ереже"
+          ],
+          "context_span_ids": [
+            "after:unit:b"
+          ],
+          "locator": {
+            "kind": "docx",
+            "clause": "2",
+            "path": "paragraph:2",
+            "page": null,
+            "sheet": null,
+            "cell_range": null
+          },
+          "is_content": true
+        }
+      ]
+    }
+  ]
+}

@@ -1,0 +1,15 @@
+{
+  "name": "rename",
+  "links": {
+    "before:fn:archive": [
+      "after:fn:renamed"
+    ]
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [],
+  "expectations": {
+    "renamed_unit": 1,
+    "loss": 0
+  }
+}

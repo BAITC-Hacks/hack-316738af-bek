@@ -1,0 +1,15 @@
+{
+  "name": "executor_controller",
+  "links": {
+    "before:fn:execute": [
+      "after:fn:execute"
+    ]
+  },
+  "flags": {},
+  "coverages": {},
+  "risks": [],
+  "expectations": {
+    "conflict": 0,
+    "duplicate": 0
+  }
+}
